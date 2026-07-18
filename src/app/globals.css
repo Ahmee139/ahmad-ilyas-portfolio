@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background-dark: #060606;
+  --color-background-secondary: #0F0F0F;
+  --color-silver-primary: #D9D9D9;
+  --color-silver-secondary: #F2F2F2;
+  --color-lime-accent: #C6FF00;
+  --color-lime-dark: #8AC600;
+
+  --font-display: var(--font-syne), sans-serif;
+  --font-body: var(--font-space-grotesk), sans-serif;
+
+  --animate-glow: glow 2s ease-in-out infinite alternate;
+
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 10px rgba(198, 255, 0, 0.2), 0 0 20px rgba(198, 255, 0, 0.1);
+    }
+    to {
+      box-shadow: 0 0 20px rgba(198, 255, 0, 0.4), 0 0 40px rgba(198, 255, 0, 0.2);
+    }
+  }
+}
+
+:root {
+  background-color: #060606;
+  color: #F2F2F2;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: #060606;
+  color: #F2F2F2;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hide default cursor on desktop devices with pointer accuracy */
+@media (pointer: fine) {
+  .custom-cursor-active,
+  .custom-cursor-active * {
+    cursor: none !important;
+  }
+}
+
+/* Selection styles */
+::selection {
+  background-color: #C6FF00;
+  color: #060606;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #060606;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0F0F0F;
+  border: 2px solid #060606;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C6FF00;
+}
+
+/* Noise Keyframes (shuffling background position to simulate film static) */
+@keyframes noise-animation {
+  0% { background-position: 0px 0px; }
+  10% { background-position: -50px 20px; }
+  20% { background-position: 20px -50px; }
+  30% { background-position: -10px 40px; }
+  40% { background-position: 40px -10px; }
+  50% { background-position: -30px 10px; }
+  60% { background-position: 10px -30px; }
+  70% { background-position: -40px 30px; }
+  80% { background-position: 30px -40px; }
+  90% { background-position: -20px 50px; }
+  100% { background-position: 0px 0px; }
+}
+
+/* Lenis Custom Smooth Scroll Setup */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overflow: clip;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Portrait: transparent-bg PNG — just cinematic grayscale, no blend mode needed */
+/* Hover slowly restores ~20% of original color */
+.portrait-img {
+  filter: grayscale(1) brightness(1.05) contrast(1.1);
+  will-change: filter;
+  transition: filter 1200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.portrait-container:hover .portrait-img {
+  filter: grayscale(0.8) brightness(1.05) contrast(1.1);
+}
