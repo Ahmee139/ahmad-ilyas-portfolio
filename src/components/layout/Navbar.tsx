@@ -355,7 +355,7 @@ export default function Navbar() {
         variants={containerVariants}
       >
         <motion.nav
-          className="pointer-events-auto flex items-center justify-between rounded-full px-6 md:px-8"
+          className="pointer-events-auto flex items-center justify-between rounded-full px-5 md:px-8 w-[90%] lg:w-[78%] max-w-[1280px]"
           animate={{
             y: isHidden ? -100 : 0,
             height: isScrolled ? 56 : 64,
@@ -370,7 +370,6 @@ export default function Navbar() {
             ease: [0.16, 1, 0.3, 1],
           }}
           style={{
-            width: "min(78%, 1280px)",
             border: "1px solid rgba(255,255,255,0.08)",
           }}
           role="navigation"
