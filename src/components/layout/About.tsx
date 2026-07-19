@@ -59,7 +59,7 @@ export default function About() {
 
   return (
     <SectionWrapper id="about" className="bg-background-dark border-t border-white/5 py-24 md:py-36">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
         
         {/* Left Column: Interactive Portrait */}
         <div className="lg:col-span-5 flex justify-center relative">
@@ -80,7 +80,7 @@ export default function About() {
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="portrait-container relative w-[280px] h-[360px] md:w-[320px] md:h-[420px] rounded-3xl overflow-hidden cursor-none"
+              className="portrait-container relative w-[300px] h-[400px] md:w-[380px] md:h-[500px] rounded-3xl overflow-hidden cursor-none"
             >
               {/* Very soft border glow */}
               <div className="absolute inset-0 rounded-3xl border border-lime-accent/10 shadow-[0_0_40px_rgba(198,255,0,0.05)] pointer-events-none z-20" />
@@ -92,7 +92,7 @@ export default function About() {
                 alt="M. Ahmad Ilyas Portrait"
                 fill
                 priority
-                sizes="(max-width: 768px) 280px, 320px"
+                sizes="(max-width: 768px) 300px, 380px"
                 className="portrait-img object-cover object-top select-none"
               />
               

@@ -9,6 +9,7 @@ import CustomCursor from "@/components/common/CustomCursor";
 import Noise from "@/components/common/Noise";
 import AmbientGlow from "@/components/common/AmbientGlow";
 import Particles from "@/components/common/Particles";
+import Navbar from "@/components/layout/Navbar";
 
 const syne = Syne({
   variable: "--font-syne",
@@ -62,6 +63,7 @@ export default function RootLayout({
           <Noise />
           <CustomCursor />
           <Loader />
+          <Navbar />
 
           {/* Core content container with scroll and page transitions */}
           <SmoothScrollProvider>

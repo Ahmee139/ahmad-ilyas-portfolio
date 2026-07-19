@@ -124,7 +124,7 @@ export default function Home() {
   return (
     <div className="relative w-full bg-background-dark">
       {/* 1. Hero Section Container (150vh parent enables scroll animation space) */}
-      <div ref={containerRef} className="relative w-full h-[150vh] bg-background-dark">
+      <div id="hero" ref={containerRef} className="relative w-full h-[150vh] bg-background-dark">
         {/* Sticky Viewport (keeps Hero locked during scroll transforms) */}
         <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
           
