@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion";
 import { useLoader } from "@/context/LoaderContext";
 import Magnetic from "@/components/ui/Magnetic";
+import { gsap } from "@/utils/gsap-setup";
 
 /* ─── Constants ─── */
 const NAV_ITEMS = [
@@ -112,6 +113,38 @@ function NavLink({
   );
 }
 
+/* ─── Vertical Nav Link ─── */
+function NavLinkVertical({
+  item,
+  isActive,
+  onClick,
+}: {
+  item: (typeof NAV_ITEMS)[number];
+  isActive: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <a
+      href={item.href}
+      onClick={(e) => {
+        e.preventDefault();
+        onClick();
+      }}
+      className="group relative py-1.5 cursor-pointer text-center"
+    >
+      <motion.span
+        className="block text-[11px] font-semibold tracking-[0.08em] uppercase transition-colors duration-300"
+        style={{
+          color: isActive ? "#C6FF00" : "rgba(255,255,255,0.6)",
+        }}
+        whileHover={{ scale: 1.08, color: "#F2F2F2" }}
+      >
+        {item.label}
+      </motion.span>
+    </a>
+  );
+}
+
 /* ─── Mobile Menu ─── */
 function MobileMenu({
   isOpen,
@@ -166,9 +199,10 @@ function MobileMenu({
           animate="visible"
           exit="exit"
         >
-          {/* Blurred dark backdrop */}
+          {/* Blurred dark backdrop - clicking outside closes the menu */}
           <motion.div
-            className="absolute inset-0 bg-background-dark/95 backdrop-blur-2xl"
+            className="absolute inset-0 bg-background-dark/95 backdrop-blur-2xl cursor-pointer"
+            onClick={onClose}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -269,23 +303,179 @@ export default function Navbar() {
   const [isHidden, setIsHidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+
+  // Layout morphing states
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [isDocked, setIsDocked] = useState(false);
+  const [isMobileScrolled, setIsMobileScrolled] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [windowSize, setWindowSize] = useState({ w: 0, h: 0 });
+
   const lastScrollY = useRef(0);
   const { scrollY } = useScroll();
 
-  /* ── Scroll direction tracking ── */
+  // References for GSAP transitions (wrapper and nav are separated to avoid Framer Motion transform overrides)
+  const navWrapperRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLDivElement>(null);
+  const horizontalRef = useRef<HTMLDivElement>(null);
+  const verticalRef = useRef<HTMLDivElement>(null);
+  const collapsedIconRef = useRef<HTMLDivElement>(null);
+  const mobileBarRef = useRef<HTMLDivElement>(null);
+
+  // Detect responsive screen parameters and handle resizing
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    setWindowSize({ w: window.innerWidth, h: window.innerHeight });
+    setIsDesktop(window.innerWidth >= 1024);
+
+    const handleResize = () => {
+      setWindowSize({ w: window.innerWidth, h: window.innerHeight });
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  /* ── Scroll triggers for morphing animations ── */
   useMotionValueEvent(scrollY, "change", (latest) => {
     const delta = latest - lastScrollY.current;
 
-    // Scrolled state (compact mode)
+    // Scrolled state (compact heights)
     setIsScrolled(latest > SCROLL_THRESHOLD);
 
-    // Hide/show based on direction (with threshold to avoid jitter)
-    if (Math.abs(delta) > HIDE_THRESHOLD) {
+    // Desktop Docking trigger (220px)
+    if (isDesktop) {
+      setIsDocked(latest > 220);
+    } else {
+      setIsDocked(false);
+    }
+
+    // Mobile floating button trigger (180px)
+    if (!isDesktop) {
+      setIsMobileScrolled(latest > 180);
+    } else {
+      setIsMobileScrolled(false);
+    }
+
+    // Hide/show based on direction (only if NOT docked and NOT mobile-scrolled)
+    if (!isDocked && !isMobileScrolled && Math.abs(delta) > HIDE_THRESHOLD) {
       setIsHidden(delta > 0 && latest > 120);
+    } else {
+      setIsHidden(false);
     }
 
     lastScrollY.current = latest;
   });
+
+  /* ── GSAP Morphing Timeline controller ── */
+  useEffect(() => {
+    const wrapper = navWrapperRef.current;
+    const nav = navRef.current;
+    if (!wrapper || !nav || windowSize.w === 0) return;
+
+    if (isDesktop) {
+      // DESKTOP MORPHING SEQUENCE
+      if (isDocked) {
+        // Morph to right-centered vertical dock
+        const targetHeight = isCollapsed ? 72 : 440;
+        const targetBorderRadius = isCollapsed ? "36px" : "32px";
+
+        // Center calculation coordinates
+        const originalTop = isScrolled ? 8 : 16;
+        const deltaY = windowSize.h / 2 - originalTop - targetHeight / 2;
+
+        // Calculate translation delta to position perfectly on the right (32px padding)
+        const deltaX = (windowSize.w - 32 - 36) - (windowSize.w / 2);
+
+        // Animate wrapper position and size
+        gsap.to(wrapper, {
+          x: deltaX,
+          y: deltaY,
+          width: 72,
+          height: targetHeight,
+          duration: 0.9,
+          ease: "power4.inOut",
+        });
+
+        // Animate inner nav border radius
+        gsap.to(nav, {
+          borderRadius: targetBorderRadius,
+          duration: 0.9,
+          ease: "power4.inOut",
+        });
+
+        // Toggle layout transparencies & pointer availability
+        gsap.to(horizontalRef.current, { opacity: 0, pointerEvents: "none", duration: 0.3 });
+        
+        if (isCollapsed) {
+          gsap.to(verticalRef.current, { opacity: 0, pointerEvents: "none", duration: 0.3 });
+          gsap.to(collapsedIconRef.current, { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, delay: 0.1 });
+        } else {
+          gsap.to(verticalRef.current, { opacity: 1, pointerEvents: "auto", duration: 0.4, delay: 0.1 });
+          gsap.to(collapsedIconRef.current, { opacity: 0, scale: 0.8, pointerEvents: "none", duration: 0.3 });
+        }
+      } else {
+        // Morph back to standard horizontal header bar
+        gsap.to(wrapper, {
+          x: 0,
+          y: 0,
+          width: "78%",
+          height: isScrolled ? 56 : 64,
+          duration: 0.9,
+          ease: "power4.inOut",
+        });
+
+        gsap.to(nav, {
+          borderRadius: "9999px",
+          duration: 0.9,
+          ease: "power4.inOut",
+        });
+
+        gsap.to(horizontalRef.current, { opacity: 1, pointerEvents: "auto", duration: 0.4, delay: 0.1 });
+        gsap.to(verticalRef.current, { opacity: 0, pointerEvents: "none", duration: 0.3 });
+        gsap.to(collapsedIconRef.current, { opacity: 0, scale: 0.8, pointerEvents: "none", duration: 0.3 });
+      }
+    } else {
+      // MOBILE MORPHING SEQUENCE
+      if (isMobileScrolled) {
+        // Morph to top-right floating sticky circle button
+        const deltaX = (windowSize.w - 24 - 28) - (windowSize.w / 2);
+
+        gsap.to(wrapper, {
+          x: deltaX,
+          y: 0,
+          width: 56,
+          height: 56,
+          duration: 0.9,
+          ease: "power4.inOut",
+        });
+
+        gsap.to(nav, {
+          borderRadius: "28px",
+          duration: 0.9,
+          ease: "power4.inOut",
+        });
+      } else {
+        // Morph back to full horizontal mobile menu bar
+        gsap.to(wrapper, {
+          x: 0,
+          y: 0,
+          width: "90%",
+          height: isScrolled ? 56 : 64,
+          duration: 0.9,
+          ease: "power4.inOut",
+        });
+
+        gsap.to(nav, {
+          borderRadius: "9999px",
+          duration: 0.9,
+          ease: "power4.inOut",
+        });
+      }
+    }
+  }, [isDesktop, isDocked, isMobileScrolled, isCollapsed, isScrolled, windowSize]);
 
   /* ── Active section detection via IntersectionObserver ── */
   const handleSectionIntersect = useCallback((entries: IntersectionObserverEntry[]) => {
@@ -355,93 +545,195 @@ export default function Navbar() {
         animate={isLoading ? "hidden" : "visible"}
         variants={containerVariants}
       >
-        <motion.nav
-          className="pointer-events-auto flex items-center justify-between rounded-full px-5 md:px-8 w-[90%] lg:w-[78%] max-w-[1280px]"
-          animate={{
-            y: isHidden ? -100 : 0,
-            height: isScrolled ? 56 : 64,
-            backgroundColor: isScrolled ? "rgba(8,8,8,0.75)" : "rgba(8,8,8,0.58)",
-            backdropFilter: isScrolled ? "blur(24px)" : "blur(18px)",
-            boxShadow: isScrolled
-              ? "0 4px 30px rgba(0,0,0,0.3), 0 0 1px rgba(255,255,255,0.05)"
-              : "0 2px 20px rgba(0,0,0,0.15)",
-          }}
-          transition={{
-            duration: 0.5,
-            ease: [0.16, 1, 0.3, 1],
-          }}
+        {/* Outer Wrapper Container controlled exclusively by GSAP translations */}
+        <div
+          ref={navWrapperRef}
+          className="pointer-events-auto w-[90%] lg:w-[78%] max-w-[1280px]"
           style={{
-            border: "1px solid rgba(255,255,255,0.08)",
+            height: isScrolled ? "56px" : "64px",
           }}
-          role="navigation"
-          aria-label="Main navigation"
         >
-          {/* Logo */}
-          <motion.div variants={childVariants}>
-            <Logo />
-          </motion.div>
-
-          {/* Desktop Navigation Links */}
-          <motion.div
-            className="hidden lg:flex items-center gap-10"
-            variants={childVariants}
-            onMouseLeave={() => setHoveredItem(null)}
+          {/* Inner Nav Panel animated by Framer Motion strictly for scroll hide/show */}
+          <motion.nav
+            ref={navRef}
+            className="w-full h-full relative overflow-hidden flex items-center justify-between rounded-full bg-background-dark/58 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.15)]"
+            animate={{
+              y: isHidden ? -100 : 0,
+              backgroundColor: isScrolled ? "rgba(8,8,8,0.75)" : "rgba(8,8,8,0.58)",
+              backdropFilter: isScrolled ? "blur(24px)" : "blur(18px)",
+            }}
+            transition={{
+              duration: 0.5,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            style={{
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
+            role="navigation"
+            aria-label="Main navigation"
           >
-            {NAV_ITEMS.map((item) => (
-              <NavLink
-                key={item.label}
-                item={item}
-                isActive={activeSection === item.href.slice(1)}
-                isHovered={hoveredItem === item.href}
-                onHover={() => setHoveredItem(item.href)}
-                onClick={() => scrollToSection(item.href)}
-                showUnderline={
-                  hoveredItem !== null
-                    ? hoveredItem === item.href
-                    : activeSection === item.href.slice(1)
-                }
-              />
-            ))}
-          </motion.div>
+            {/* ────────────────── DESKTOP CONTENT ────────────────── */}
+            {isDesktop && (
+              <div className="w-full h-full relative">
+                {/* A. Horizontal Layout Layer */}
+                <div
+                  ref={horizontalRef}
+                  className="absolute inset-0 flex items-center justify-between w-full h-full px-8"
+                >
+                  {/* Logo */}
+                  <motion.div variants={childVariants}>
+                    <Logo />
+                  </motion.div>
 
-          {/* Desktop Resume Button */}
-          <motion.div className="hidden lg:block" variants={childVariants}>
-            <Magnetic strength={0.2}>
-              <a
-                href="/resume/Ahmad_Ilyas_Resume"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Open Ahmad Ilyas Resume"
-                className="inline-block px-7 py-2.5 text-[11px] font-medium tracking-[0.08em] uppercase rounded-full border border-white/15 text-silver-secondary cursor-pointer select-none transition-all duration-[450ms] ease-[0.16,1,0.3,1] hover:bg-lime-accent hover:text-background-dark hover:border-lime-accent hover:scale-[1.04] hover:shadow-[0_0_20px_rgba(198,255,0,0.15)]"
-              >
-                Resume
-              </a>
-            </Magnetic>
-          </motion.div>
+                  {/* Nav Links */}
+                  <motion.div className="flex items-center gap-10" variants={childVariants}>
+                    {NAV_ITEMS.map((item) => (
+                      <NavLink
+                        key={item.label}
+                        item={item}
+                        isActive={activeSection === item.href.slice(1)}
+                        isHovered={hoveredItem === item.href}
+                        onHover={() => setHoveredItem(item.href)}
+                        onClick={() => scrollToSection(item.href)}
+                        showUnderline={
+                          hoveredItem !== null
+                            ? hoveredItem === item.href
+                            : activeSection === item.href.slice(1)
+                        }
+                      />
+                    ))}
+                  </motion.div>
 
-          {/* Mobile Hamburger Button */}
-          <motion.div className="lg:hidden" variants={childVariants}>
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="relative w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 cursor-pointer"
-              aria-label={mobileOpen ? "Close menu" : "Open menu"}
-              aria-expanded={mobileOpen}
-            >
-              <div className="flex flex-col items-center justify-center gap-[5px] w-[16px]">
-                <motion.span
-                  className="block w-full h-[1.5px] bg-silver-secondary rounded-full origin-center"
-                  animate={mobileOpen ? { rotate: 45, y: 3.25 } : { rotate: 0, y: 0 }}
-                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                />
-                <motion.span
-                  className="block w-full h-[1.5px] bg-silver-secondary rounded-full origin-center"
-                  animate={mobileOpen ? { rotate: -45, y: -3.25 } : { rotate: 0, y: 0 }}
-                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                />
+                  {/* Resume Button */}
+                  <motion.div variants={childVariants}>
+                    <Magnetic strength={0.2}>
+                      <a
+                        href="/resume/Ahmad_Ilyas_Resume"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Open Ahmad Ilyas Resume"
+                        className="inline-block px-7 py-2.5 text-[11px] font-medium tracking-[0.08em] uppercase rounded-full border border-white/15 text-silver-secondary cursor-pointer select-none transition-all duration-[450ms] ease-[0.16,1,0.3,1] hover:bg-lime-accent hover:text-background-dark hover:border-lime-accent hover:scale-[1.04] hover:shadow-[0_0_20px_rgba(198,255,0,0.15)]"
+                      >
+                        Resume
+                      </a>
+                    </Magnetic>
+                  </motion.div>
+                </div>
+
+                {/* B. Vertical Layout Layer */}
+                <div
+                  ref={verticalRef}
+                  className="absolute inset-0 flex flex-col items-center justify-between w-full h-full py-8 opacity-0 pointer-events-none z-10"
+                >
+                  <div className="flex flex-col items-center gap-7 w-full">
+                    {/* Vertical Menu Links */}
+                    {NAV_ITEMS.map((item) => (
+                      <NavLinkVertical
+                        key={item.label}
+                        item={item}
+                        isActive={activeSection === item.href.slice(1)}
+                        onClick={() => scrollToSection(item.href)}
+                      />
+                    ))}
+
+                    {/* Vertical Resume Link */}
+                    <a
+                      href="/resume/Ahmad_Ilyas_Resume"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Open Ahmad Ilyas Resume"
+                      className="text-[11px] font-semibold tracking-[0.08em] uppercase text-silver-primary/80 hover:text-lime-accent transition-colors duration-300"
+                    >
+                      Resume
+                    </a>
+                  </div>
+
+                  {/* Collapse Button */}
+                  <button
+                    onClick={() => setIsCollapsed(true)}
+                    className="w-8 h-8 rounded-full border border-white/10 hover:border-lime-accent/30 hover:bg-lime-accent/5 flex items-center justify-center text-silver-secondary hover:text-lime-accent transition-all cursor-pointer"
+                    aria-label="Collapse Navigation"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="18 15 12 9 6 15"></polyline>
+                    </svg>
+                  </button>
+                </div>
+
+                {/* C. Collapsed Menu Grid Icon Layer */}
+                <div
+                  ref={collapsedIconRef}
+                  className="absolute inset-0 flex items-center justify-center w-full h-full opacity-0 pointer-events-none z-20"
+                >
+                  <button
+                    onClick={() => setIsCollapsed(false)}
+                    className="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:border-lime-accent/40 flex items-center justify-center text-silver-secondary hover:text-lime-accent transition-all cursor-pointer"
+                    aria-label="Expand Navigation"
+                  >
+                    {/* Luxury 4-dot Grid indicator */}
+                    <div className="grid grid-cols-2 gap-[4px] w-[14px] h-[14px]">
+                      <span className="w-[5px] h-[5px] rounded-full bg-lime-accent" />
+                      <span className="w-[5px] h-[5px] rounded-full bg-silver-primary" />
+                      <span className="w-[5px] h-[5px] rounded-full bg-silver-primary" />
+                      <span className="w-[5px] h-[5px] rounded-full bg-lime-accent" />
+                    </div>
+                  </button>
+                </div>
               </div>
-            </button>
-          </motion.div>
-        </motion.nav>
+            )}
+
+            {/* ────────────────── MOBILE CONTENT ────────────────── */}
+            {!isDesktop && (
+              <div
+                ref={mobileBarRef}
+                className="relative w-full h-full flex items-center justify-between px-5 py-3"
+              >
+                {/* Mobile Logo Layer */}
+                <motion.div
+                  className="flex items-center"
+                  animate={{ opacity: isMobileScrolled ? 0 : 1 }}
+                  transition={{ duration: 0.3 }}
+                  style={{ pointerEvents: isMobileScrolled ? "none" : "auto" }}
+                >
+                  <Logo />
+                </motion.div>
+
+                {/* Mobile Hamburger Button Layer */}
+                <motion.div
+                  className="flex items-center justify-center"
+                  animate={{
+                    position: isMobileScrolled ? "absolute" : "relative",
+                    left: isMobileScrolled ? "50%" : "auto",
+                    top: isMobileScrolled ? "50%" : "auto",
+                    x: isMobileScrolled ? "-50%" : "0%",
+                    y: isMobileScrolled ? "-50%" : "0%",
+                  }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <button
+                    onClick={() => setMobileOpen(!mobileOpen)}
+                    className="relative w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 cursor-pointer"
+                    aria-label={mobileOpen ? "Close menu" : "Open menu"}
+                    aria-expanded={mobileOpen}
+                  >
+                    <div className="flex flex-col items-center justify-center gap-[5px] w-[16px]">
+                      <motion.span
+                        className="block w-full h-[1.5px] bg-silver-secondary rounded-full origin-center"
+                        animate={mobileOpen ? { rotate: 45, y: 3.25 } : { rotate: 0, y: 0 }}
+                        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                      />
+                      <motion.span
+                        className="block w-full h-[1.5px] bg-silver-secondary rounded-full origin-center"
+                        animate={mobileOpen ? { rotate: -45, y: -3.25 } : { rotate: 0, y: 0 }}
+                        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                      />
+                    </div>
+                  </button>
+                </motion.div>
+              </div>
+            )}
+          </motion.nav>
+        </div>
       </motion.header>
 
       {/* Mobile Full-screen Menu Overlay */}
