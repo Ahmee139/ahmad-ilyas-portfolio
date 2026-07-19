@@ -132,14 +132,14 @@ export default function Home() {
           {/* Animated Wrapper: Handles slow global zoom on scroll */}
           <motion.div
             style={{ scale: springScaleContent }}
-            className="w-full max-w-7xl mx-auto px-6 md:px-12 pt-24 pb-16 md:pt-36 lg:pt-40 flex items-center h-full relative z-10"
+            className="w-full max-w-7xl mx-auto px-6 md:px-12 pt-20 pb-16 md:pt-36 lg:pt-40 flex items-center h-full relative z-10"
           >
             {/* Post-Loader Stagger Entrance Sequence Container */}
             <motion.div
               initial="hidden"
               animate={isLoading ? "hidden" : "visible"}
               variants={parentVariants}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center w-full"
+              className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10 lg:gap-16 items-center w-full"
             >
               
               {/* Left Side: Typographic Column with 3D Mouse Parallax & Scroll Fade */}
@@ -152,9 +152,9 @@ export default function Home() {
                   opacity: springOpacityText,
                   transformStyle: "preserve-3d",
                 }}
-                className="lg:col-span-7 flex flex-col justify-center space-y-5 md:space-y-8 text-left perspective-[1000px] pointer-events-auto"
+                className="lg:col-span-7 flex flex-col justify-center space-y-4 md:space-y-8 text-left perspective-[1000px] pointer-events-auto"
               >
-                <div className="space-y-3" style={{ transform: "translateZ(30px)" }}>
+                <div className="space-y-2 md:space-y-3" style={{ transform: "translateZ(30px)" }}>
                   {/* Introduction Tag */}
                   <motion.div variants={itemVariants}>
                     <span className="font-mono text-xs md:text-sm tracking-[0.25em] text-lime-accent uppercase">
@@ -164,7 +164,7 @@ export default function Home() {
 
                   {/* Heading Reveal (Name appears line-by-line using mask animations with the clean geometric font) */}
                   <SpotlightText>
-                    <div className="flex flex-col font-display font-extrabold text-3xl sm:text-4xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight text-silver-secondary select-none">
+                    <div className="flex flex-col font-display font-extrabold text-4xl sm:text-5xl lg:text-7xl leading-[1.05] tracking-tight text-silver-secondary select-none">
                       <div className="overflow-hidden py-1 -my-1">
                         <motion.span className="inline-block" variants={lineVariants}>
                           M. Ahmad
@@ -183,13 +183,13 @@ export default function Home() {
                 <motion.div variants={itemVariants} style={{ transform: "translateZ(20px)" }} className="w-full">
                   <TextCycler
                     items={roles}
-                    className="text-lg md:text-3xl lg:text-4xl font-display font-semibold text-silver-primary tracking-tight leading-normal"
+                    className="text-xl sm:text-2xl lg:text-4xl font-display font-semibold text-silver-primary tracking-tight leading-normal"
                   />
                 </motion.div>
 
                 {/* Premium 3-Line Description */}
                 <motion.div variants={itemVariants} style={{ transform: "translateZ(10px)" }} className="max-w-xl pt-1">
-                  <p className="text-xs sm:text-sm md:text-base text-silver-primary/60 leading-relaxed font-light tracking-wide">
+                  <p className="text-sm sm:text-base text-silver-primary/60 leading-relaxed font-light tracking-wide">
                     Crafting modern, high-performance web applications using Next.js and React.
                     Engineering interactive user interfaces, clean component structures, and
                     immersive digital architectures with meticulous detail.
@@ -201,7 +201,7 @@ export default function Home() {
               <motion.div
                 variants={canvasVariants}
                 style={{ scale: springScaleBackground }}
-                className="lg:col-span-5 w-full h-[30vh] lg:h-[70vh] flex items-center justify-center relative"
+                className="lg:col-span-5 w-full h-[25vh] sm:h-[30vh] lg:h-[70vh] flex items-center justify-center relative"
               >
                 <HeroCanvas scrollProgress={scrollYProgress} />
               </motion.div>
