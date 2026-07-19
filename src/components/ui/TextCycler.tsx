@@ -26,7 +26,7 @@ export default function TextCycler({
   }, [items.length, interval]);
 
   return (
-    <div className="relative overflow-hidden h-[1.4em] flex items-center select-none w-full">
+    <div className="relative overflow-hidden h-[1.8em] flex items-center select-none w-full">
       <AnimatePresence mode="wait">
         <motion.span
           key={index}

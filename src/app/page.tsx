@@ -9,6 +9,7 @@ import Projects from "@/components/layout/Projects";
 import Contact from "@/components/layout/Contact";
 import Footer from "@/components/layout/Footer";
 import { useLoader } from "@/context/LoaderContext";
+import SpotlightText from "@/components/ui/SpotlightText";
 
 // Dynamically load the high-performance WebGL particle waves canvas
 const HeroCanvas = dynamic(
@@ -131,7 +132,7 @@ export default function Home() {
           {/* Animated Wrapper: Handles slow global zoom on scroll */}
           <motion.div
             style={{ scale: springScaleContent }}
-            className="w-full max-w-7xl mx-auto px-6 md:px-12 py-16 flex items-center h-full relative z-10"
+            className="w-full max-w-7xl mx-auto px-6 md:px-12 pt-28 pb-16 md:pt-36 lg:pt-40 flex items-center h-full relative z-10"
           >
             {/* Post-Loader Stagger Entrance Sequence Container */}
             <motion.div
@@ -161,34 +162,37 @@ export default function Home() {
                     </span>
                   </motion.div>
 
-                  {/* Heading Reveal (Name appears line-by-line using mask animations) */}
-                  <div className="flex flex-col font-display font-extrabold text-5xl md:text-7xl lg:text-8xl leading-none tracking-tighter text-silver-secondary select-none">
-                    <div className="overflow-hidden py-1 -my-1">
-                      <motion.span className="inline-block" variants={lineVariants}>
-                        M. Ahmad
-                      </motion.span>
+                  {/* Heading Reveal (Name appears line-by-line using mask animations with the clean geometric font) */}
+                  <SpotlightText>
+                    <div className="flex flex-col font-display font-extrabold text-4xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight text-silver-secondary select-none">
+                      <div className="overflow-hidden py-1 -my-1">
+                        <motion.span className="inline-block" variants={lineVariants}>
+                          M. Ahmad
+                        </motion.span>
+                      </div>
+                      <div className="overflow-hidden py-1 -my-1">
+                        <motion.span className="inline-block" variants={lineVariants}>
+                          Ilyas
+                        </motion.span>
+                      </div>
                     </div>
-                    <div className="overflow-hidden py-1 -my-1">
-                      <motion.span className="inline-block" variants={lineVariants}>
-                        Ilyas
-                      </motion.span>
-                    </div>
-                  </div>
+                  </SpotlightText>
                 </div>
 
                 {/* Automatic Text Cycler */}
                 <motion.div variants={itemVariants} style={{ transform: "translateZ(20px)" }} className="w-full">
                   <TextCycler
                     items={roles}
-                    className="text-xl md:text-3xl lg:text-4xl font-display font-semibold text-silver-primary tracking-tight"
+                    className="text-xl md:text-3xl lg:text-4xl font-display font-semibold text-silver-primary tracking-tight leading-normal"
                   />
                 </motion.div>
 
-                {/* Premium 2-Line Description */}
-                <motion.div variants={itemVariants} style={{ transform: "translateZ(10px)" }} className="max-w-md pt-2">
+                {/* Premium 3-Line Description */}
+                <motion.div variants={itemVariants} style={{ transform: "translateZ(10px)" }} className="max-w-xl pt-2">
                   <p className="text-sm md:text-base text-silver-primary/60 leading-relaxed font-light tracking-wide">
-                    Crafting bleeding-edge digital ecosystems with meticulous detail.
-                    Focusing on immersive WebGL structures and seamless React physics.
+                    Crafting modern, high-performance web applications using Next.js and React.
+                    Engineering interactive user interfaces, clean component structures, and
+                    immersive digital architectures with meticulous detail.
                   </p>
                 </motion.div>
               </motion.div>

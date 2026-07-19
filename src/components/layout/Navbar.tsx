@@ -41,19 +41,14 @@ function Logo() {
         aria-hidden="true"
       />
 
-      {/* "M." — small, medium weight */}
+      {/* "My" — small, medium weight */}
       <span className="text-[13px] md:text-[15px] font-medium text-silver-primary tracking-wide transition-colors duration-500">
-        M.
+        My
       </span>
 
-      {/* "Ahmad" — largest, bold, primary focus */}
+      {/* "Portfolio" — largest, bold, primary focus */}
       <span className="text-[17px] md:text-[19px] font-bold text-silver-secondary tracking-[0.02em] transition-colors duration-500">
-        Ahmad
-      </span>
-
-      {/* "Ilyas" — slightly smaller, medium weight */}
-      <span className="text-[14px] md:text-[16px] font-medium text-silver-primary tracking-[0.04em] transition-colors duration-500">
-        Ilyas
+        Portfolio
       </span>
 
       {/* Tiny lime accent dot after the name */}
@@ -69,15 +64,22 @@ function Logo() {
 function NavLink({
   item,
   isActive,
+  isHovered,
+  onHover,
   onClick,
+  showUnderline,
 }: {
   item: (typeof NAV_ITEMS)[number];
   isActive: boolean;
+  isHovered: boolean;
+  onHover: () => void;
   onClick: () => void;
+  showUnderline: boolean;
 }) {
   return (
     <a
       href={item.href}
+      onMouseEnter={onHover}
       onClick={(e) => {
         e.preventDefault();
         onClick();
@@ -87,33 +89,25 @@ function NavLink({
       <motion.span
         className="block text-[12px] md:text-[13px] font-medium tracking-[0.08em] uppercase transition-colors duration-[450ms]"
         style={{
-          color: isActive ? "#F2F2F2" : "rgba(255,255,255,0.65)",
+          color: (isActive || isHovered) ? "#F2F2F2" : "rgba(255,255,255,0.65)",
         }}
-        whileHover={{ y: -2, color: "#F2F2F2" }}
+        whileHover={{ y: -2 }}
         transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
       >
         {item.label}
       </motion.span>
 
-      {/* Underline — grows from center */}
-      <motion.span
-        className="absolute bottom-0 left-1/2 h-[1.5px] bg-lime-accent rounded-full"
-        initial={false}
-        animate={{
-          width: isActive ? "60%" : "0%",
-          x: "-50%",
-          opacity: isActive ? 1 : 0,
-        }}
-        whileHover={{
-          width: "60%",
-          x: "-50%",
-          opacity: 1,
-        }}
-        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-        style={{
-          boxShadow: isActive ? "0 0 8px rgba(198,255,0,0.25)" : "none",
-        }}
-      />
+      {/* Shared Sliding Underline Indicator using layoutId */}
+      {showUnderline && (
+        <motion.span
+          layoutId="nav-underline"
+          className="absolute bottom-0 left-1/4 right-1/4 h-[2px] bg-lime-accent rounded-full"
+          transition={{ type: "spring", stiffness: 380, damping: 30 }}
+          style={{
+            boxShadow: "0 0 8px rgba(198,255,0,0.4)",
+          }}
+        />
+      )}
     </a>
   );
 }
@@ -273,6 +267,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const lastScrollY = useRef(0);
   const { scrollY } = useScroll();
 
@@ -390,13 +385,21 @@ export default function Navbar() {
           <motion.div
             className="hidden lg:flex items-center gap-10"
             variants={childVariants}
+            onMouseLeave={() => setHoveredItem(null)}
           >
             {NAV_ITEMS.map((item) => (
               <NavLink
                 key={item.label}
                 item={item}
                 isActive={activeSection === item.href.slice(1)}
+                isHovered={hoveredItem === item.href}
+                onHover={() => setHoveredItem(item.href)}
                 onClick={() => scrollToSection(item.href)}
+                showUnderline={
+                  hoveredItem !== null
+                    ? hoveredItem === item.href
+                    : activeSection === item.href.slice(1)
+                }
               />
             ))}
           </motion.div>

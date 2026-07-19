@@ -9,6 +9,7 @@ import Reveal from "@/components/ui/Reveal";
 import Button from "@/components/ui/Button";
 import Magnetic from "@/components/ui/Magnetic";
 import { FiGithub, FiExternalLink } from "react-icons/fi";
+import SpotlightText from "@/components/ui/SpotlightText";
 
 interface Project {
   name: string;
@@ -164,13 +165,15 @@ function InteractiveProjectCard({ project, index }: { project: Project; index: n
           >
             <div className="space-y-6" style={{ transform: "translateZ(25px)" }}>
               {/* Project Title with sliding translation */}
-              <motion.h3
-                variants={{ hover: { x: 8 } }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
-                className="text-2xl md:text-3xl font-display font-extrabold tracking-tight text-silver-secondary select-none"
-              >
-                {project.name}
-              </motion.h3>
+              <SpotlightText>
+                <motion.h3
+                  variants={{ hover: { x: 8 } }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
+                  className="text-2xl md:text-3xl font-display font-extrabold tracking-tight text-silver-secondary select-none"
+                >
+                  {project.name}
+                </motion.h3>
+              </SpotlightText>
 
               {/* Project Description */}
               <p className="text-sm md:text-base text-silver-primary/60 leading-relaxed font-light tracking-wide select-none">

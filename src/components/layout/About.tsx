@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import SectionWrapper from "@/components/layout/SectionWrapper";
@@ -9,6 +9,7 @@ import Reveal from "@/components/ui/Reveal";
 
 export default function About() {
   const imageRef = useRef<HTMLDivElement>(null);
+  const [hoveredSkillIndex, setHoveredSkillIndex] = useState<number | null>(null);
 
   // Mouse tracking for portrait parallax
   const mouseX = useMotionValue(0);
@@ -144,14 +145,27 @@ export default function About() {
             </Reveal>
 
             {/* Staggered skill badges */}
-            <div className="flex flex-wrap gap-2.5 max-w-xl">
+            <div 
+              className="flex flex-wrap gap-2.5 max-w-xl"
+              onMouseLeave={() => setHoveredSkillIndex(null)}
+            >
               {skills.map((skill, index) => (
                 <Reveal key={skill} variant="fade-up" delay={0.55 + index * 0.04}>
                   <div
-                    // Custom hover attributes: slight lift, background shift, and lime border glow with premium ease
-                    className="px-5 py-2.5 text-xs font-mono rounded-full border border-white/5 bg-white/2 text-silver-primary transition-all duration-500 ease-[0.16,1,0.3,1] hover:-translate-y-1 hover:bg-lime-accent/3 hover:text-lime-accent hover:border-lime-accent/40 hover:shadow-[0_0_15px_rgba(198,255,0,0.15)] select-none"
+                    onMouseEnter={() => setHoveredSkillIndex(index)}
+                    // Added relative position, overflow-visible, and cursor-pointer to support layout underlines
+                    className="relative px-5 py-2.5 text-xs font-mono rounded-full border border-white/5 bg-white/2 text-silver-primary transition-all duration-500 ease-[0.16,1,0.3,1] hover:-translate-y-1 hover:bg-lime-accent/3 hover:text-lime-accent hover:border-lime-accent/40 hover:shadow-[0_0_15px_rgba(198,255,0,0.15)] select-none cursor-pointer"
                   >
-                    {skill}
+                    <span className="relative z-10">{skill}</span>
+
+                    {/* Shared lime green indicator bar that slides/morphs to other items on hover */}
+                    {hoveredSkillIndex === index && (
+                      <motion.div
+                        layoutId="skills-underline"
+                        className="absolute bottom-0 left-1/4 right-1/4 h-[2px] bg-lime-accent rounded-full shadow-[0_0_8px_rgba(198,255,0,0.5)]"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
                   </div>
                 </Reveal>
               ))}

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Syne, Space_Grotesk } from "next/font/google";
+import { Syne, Space_Grotesk, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { LoaderProvider } from "@/context/LoaderContext";
 import SmoothScrollProvider from "@/components/layout/SmoothScrollProvider";
@@ -13,6 +13,12 @@ import Navbar from "@/components/layout/Navbar";
 
 const syne = Syne({
   variable: "--font-syne",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const playfairDisplay = Playfair_Display({
+  variable: "--font-serif",
   subsets: ["latin"],
   display: "swap",
 });
@@ -51,7 +57,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${syne.variable} ${spaceGrotesk.variable} dark antialiased`}
+      className={`${syne.variable} ${spaceGrotesk.variable} ${playfairDisplay.variable} dark antialiased`}
     >
       <body>
         <LoaderProvider>

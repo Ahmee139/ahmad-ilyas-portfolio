@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { cn } from "@/utils/cn";
+import SpotlightText from "@/components/ui/SpotlightText";
 
 interface HeadingProps {
   children: string;
@@ -31,18 +32,20 @@ export default function Heading({
   if (!reveal) {
     const parts = children.split(/(\{.*?\})/g);
     return (
-      <Tag className={cn(baseStyles[tag], className)}>
-        {parts.map((part, index) => {
-          if (part.startsWith("{") && part.endsWith("}")) {
-            return (
-              <span key={index} className="text-lime-accent">
-                {part.slice(1, -1)}
-              </span>
-            );
-          }
-          return part;
-        })}
-      </Tag>
+      <SpotlightText>
+        <Tag className={cn(baseStyles[tag], className)}>
+          {parts.map((part, index) => {
+            if (part.startsWith("{") && part.endsWith("}")) {
+              return (
+                <span key={index} className="text-lime-accent">
+                  {part.slice(1, -1)}
+                </span>
+              );
+            }
+            return part;
+          })}
+        </Tag>
+      </SpotlightText>
     );
   }
 
@@ -93,36 +96,38 @@ export default function Heading({
   };
 
   return (
-    <Tag className={cn(baseStyles[tag], "overflow-hidden", className)}>
-      <motion.span
-        className="inline-flex flex-wrap"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-10%" }}
-      >
-        {wordsList.map((wordObj, idx) => {
-          if (wordObj.text === "") {
-            return <span key={idx} className="mr-[0.25em]" />;
-          }
-          return (
-            <span
-              key={idx}
-              className="relative inline-block overflow-hidden mr-[0.25em] py-[0.1em] -my-[0.1em]"
-            >
-              <motion.span
-                className={cn(
-                  "inline-block origin-left",
-                  wordObj.isHighlighted ? "text-lime-accent font-extrabold" : "text-silver-secondary"
-                )}
-                variants={wordVariants}
+    <SpotlightText>
+      <Tag className={cn(baseStyles[tag], "overflow-hidden", className)}>
+        <motion.span
+          className="inline-flex flex-wrap"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-5%" }}
+        >
+          {wordsList.map((wordObj, idx) => {
+            if (wordObj.text === "") {
+              return <span key={idx} className="mr-[0.25em]" />;
+            }
+            return (
+              <span
+                key={idx}
+                className="relative inline-block overflow-hidden mr-[0.25em] py-[0.1em] -my-[0.1em]"
               >
-                {wordObj.text}
-              </motion.span>
-            </span>
-          );
-        })}
-      </motion.span>
-    </Tag>
+                <motion.span
+                  className={cn(
+                    "inline-block origin-left",
+                    wordObj.isHighlighted ? "text-lime-accent font-extrabold" : "text-silver-secondary"
+                  )}
+                  variants={wordVariants}
+                >
+                  {wordObj.text}
+                </motion.span>
+              </span>
+            );
+          })}
+        </motion.span>
+      </Tag>
+    </SpotlightText>
   );
 }
