@@ -41,7 +41,14 @@ export default function SmoothScrollProvider({ children }: SmoothScrollProviderP
     if (lenisInstance) {
       if (isLoading) {
         lenisInstance.stop();
+        // Tell browser not to restore scroll positions, and force absolute top scroll
+        if (typeof window !== "undefined") {
+          window.history.scrollRestoration = "manual";
+          window.scrollTo(0, 0);
+        }
       } else {
+        // Force Lenis to snap to the top immediately upon loader completion
+        lenisInstance.scrollTo(0, { immediate: true });
         lenisInstance.start();
       }
     }

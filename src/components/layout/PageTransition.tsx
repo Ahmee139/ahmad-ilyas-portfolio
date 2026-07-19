@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useLoader } from "@/context/LoaderContext";
@@ -12,14 +12,13 @@ interface PageTransitionProps {
 export default function PageTransition({ children }: PageTransitionProps) {
   const pathname = usePathname();
   const { isLoading } = useLoader();
-  const [isFirstMount, setIsFirstMount] = useState(true);
+  const isFirstMount = useRef(true);
 
   useEffect(() => {
-    // Disable first mount flag after cinematic loader finishes
     if (!isLoading) {
       const timeout = setTimeout(() => {
-        setIsFirstMount(false);
-      }, 1000);
+        isFirstMount.current = false;
+      }, 200);
       return () => clearTimeout(timeout);
     }
   }, [isLoading]);
@@ -38,7 +37,7 @@ export default function PageTransition({ children }: PageTransitionProps) {
         </motion.div>
 
         {/* Swipe cover transition wipe - skips initial load to avoid loader interference */}
-        {!isFirstMount && !isLoading && (
+        {!isFirstMount.current && !isLoading && (
           <motion.div
             className="fixed inset-0 w-full h-full bg-lime-accent z-[9980] origin-bottom pointer-events-none"
             initial={{ scaleY: 0 }}
