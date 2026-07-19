@@ -245,9 +245,10 @@ function MobileMenu({
               }}
             >
               <a
-                href="/resume.pdf"
+                href="/resume/Ahmad_Ilyas_Resume"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Open Ahmad Ilyas Resume"
                 className="inline-block px-8 py-3.5 text-sm font-medium tracking-[0.08em] uppercase rounded-full border border-white/15 text-silver-secondary hover:bg-lime-accent hover:text-background-dark hover:border-lime-accent transition-all duration-[450ms] cursor-pointer"
               >
                 Resume
@@ -407,9 +408,10 @@ export default function Navbar() {
           <motion.div className="hidden lg:block" variants={childVariants}>
             <Magnetic strength={0.2}>
               <a
-                href="/resume.pdf"
+                href="/resume/Ahmad_Ilyas_Resume"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Open Ahmad Ilyas Resume"
                 className="inline-block px-7 py-2.5 text-[11px] font-medium tracking-[0.08em] uppercase rounded-full border border-white/15 text-silver-secondary cursor-pointer select-none transition-all duration-[450ms] ease-[0.16,1,0.3,1] hover:bg-lime-accent hover:text-background-dark hover:border-lime-accent hover:scale-[1.04] hover:shadow-[0_0_20px_rgba(198,255,0,0.15)]"
               >
                 Resume

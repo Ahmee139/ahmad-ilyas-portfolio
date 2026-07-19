@@ -36,8 +36,8 @@ export default function Contact() {
   }, [glowX, glowY]);
 
   const contactData = {
-    email: "mailto:ahmad@example.com", // Placeholder contact mail
-    whatsapp: "https://wa.me/923327288157", // WhatsApp redirect API
+    email: "mailto:ahmadinfo139@gmail.com?subject=Let's%20Work%20Together",
+    whatsapp: "https://wa.me/923327288157?text=Hi%20Ahmad%2C%0A%0AI%20visited%20your%20portfolio%20and%20would%20like%20to%20discuss%20a%20project%20with%20you.",
   };
 
   return (
@@ -84,6 +84,7 @@ export default function Contact() {
           <Magnetic>
             <a
               href={contactData.email}
+              aria-label="Send Email to Ahmad Ilyas"
               className="relative group block overflow-hidden rounded-full p-[1.5px] cursor-none select-none transition-all duration-500 hover:shadow-[0_0_30px_rgba(198,255,0,0.18)]"
             >
               {/* Conic sweep border container (rotates slowly, accelerates on hover) */}
@@ -103,6 +104,7 @@ export default function Contact() {
               href={contactData.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Chat with Ahmad Ilyas on WhatsApp"
               className="relative group block overflow-hidden rounded-full p-[1.5px] cursor-none select-none transition-all duration-500 hover:shadow-[0_0_30px_rgba(198,255,0,0.18)]"
             >
               {/* Conic sweep border container */}
@@ -117,6 +119,35 @@ export default function Contact() {
           </Magnetic>
 
         </div>
+
+        {/* Direct Contact Details for Show Purpose in clean HUD style */}
+        <Reveal variant="fade-up" delay={0.4}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-12 pt-8 text-xs md:text-sm font-mono tracking-widest text-silver-primary/40 select-none">
+            <a
+              href={contactData.email}
+              aria-label="Send Email to Ahmad Ilyas"
+              className="hover:text-lime-accent transition-colors duration-300 flex items-center gap-2 cursor-pointer"
+            >
+              <span>EMAIL:</span>
+              <span className="text-silver-secondary hover:underline underline-offset-4 decoration-lime-accent/50 transition-all font-light lowercase">
+                ahmadinfo139@gmail.com
+              </span>
+            </a>
+            
+            <a
+              href={contactData.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Chat with Ahmad Ilyas on WhatsApp"
+              className="hover:text-lime-accent transition-colors duration-300 flex items-center gap-2 cursor-pointer"
+            >
+              <span>WHATSAPP:</span>
+              <span className="text-silver-secondary hover:underline underline-offset-4 decoration-lime-accent/50 transition-all font-light">
+                +92 332 7288157
+              </span>
+            </a>
+          </div>
+        </Reveal>
 
       </div>
     </SectionWrapper>
