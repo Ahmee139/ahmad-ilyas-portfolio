@@ -71,13 +71,13 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0F0F0F;
+  background: #C6FF00;
   border: 2px solid #060606;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #C6FF00;
+  background: #8AC600;
 }
 
 /* Noise Keyframes (shuffling background position to simulate film static) */

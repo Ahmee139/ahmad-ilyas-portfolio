@@ -364,21 +364,21 @@ export default function Navbar() {
           gsap.to(mobileFloatingIconRef.current, { opacity: 0, pointerEvents: "none", duration: 0.2 });
           gsap.to(mobileFloatingMenuRef.current, { opacity: 1, pointerEvents: "auto", duration: 0.4, delay: 0.1 });
         } else {
-          // Floating sticky circle button on mobile (right side, vertically centered)
-          const deltaX = (windowSize.w - 24 - 28) - (windowSize.w / 2);
-          const deltaY = windowSize.h / 2 - originalTop - 28; // height 56 / 2 = 28
+          // Floating sticky circle button on mobile (right side, vertically centered) - matching desktop style
+          const deltaX = (windowSize.w - 24 - 36) - (windowSize.w / 2);
+          const deltaY = windowSize.h / 2 - originalTop - 36; // height 72 / 2 = 36
 
           gsap.to(wrapper, {
             x: deltaX,
             y: deltaY,
-            width: 56,
-            height: 56,
+            width: 72,
+            height: 72,
             duration: 0.8,
             ease: "power4.inOut",
           });
 
           gsap.to(nav, {
-            borderRadius: "28px",
+            borderRadius: "36px",
             duration: 0.8,
             ease: "power4.inOut",
           });
@@ -698,15 +698,24 @@ export default function Navbar() {
                 </AnimatePresence>
               </div>
 
-              {/* Layer 2: Mobile Floating Circle Toggle Button */}
+              {/* Layer 2: Mobile Floating Circle Toggle Button - showing luxury 4-dot Grid indicator */}
               <div
                 ref={mobileFloatingIconRef}
                 className="absolute inset-0 flex items-center justify-center w-full h-full opacity-0 pointer-events-none z-20"
               >
-                <HamburgerToggle
-                  isOpen={mobileOpen}
-                  onClick={() => setMobileOpen(!mobileOpen)}
-                />
+                <button
+                  onClick={() => setMobileOpen(true)}
+                  className="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:border-lime-accent/40 flex items-center justify-center text-silver-secondary hover:text-lime-accent transition-all cursor-pointer"
+                  aria-label="Open Mobile Menu"
+                >
+                  {/* Luxury 4-dot Grid indicator */}
+                  <div className="grid grid-cols-2 gap-[4px] w-[14px] h-[14px]">
+                    <span className="w-[5px] h-[5px] rounded-full bg-lime-accent" />
+                    <span className="w-[5px] h-[5px] rounded-full bg-silver-primary" />
+                    <span className="w-[5px] h-[5px] rounded-full bg-silver-primary" />
+                    <span className="w-[5px] h-[5px] rounded-full bg-lime-accent" />
+                  </div>
+                </button>
               </div>
 
               {/* Layer 3: Mobile Floating Expanded Vertical Menu */}
