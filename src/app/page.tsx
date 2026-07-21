@@ -154,24 +154,25 @@ export default function Home() {
                 }}
                 className="lg:col-span-7 flex flex-col justify-center space-y-4 md:space-y-8 text-left perspective-[1000px] pointer-events-auto"
               >
-                <div className="space-y-2 md:space-y-3" style={{ transform: "translateZ(30px)" }}>
-                  {/* Introduction Tag */}
+                <div className="space-y-3 md:space-y-4" style={{ transform: "translateZ(30px)" }}>
+                  {/* Introduction Tag with inline pulsing accent dot for exact alignment */}
                   <motion.div variants={itemVariants}>
-                    <span className="font-mono text-xs md:text-sm tracking-[0.25em] text-lime-accent uppercase">
+                    <span className="font-mono text-xs md:text-sm tracking-[0.25em] text-lime-accent uppercase flex items-center gap-2.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-lime-accent animate-pulse shadow-[0_0_8px_rgba(244,90,55,0.6)]" />
                       {"Hello I'm"}
                     </span>
                   </motion.div>
 
-                  {/* Heading Reveal (Name appears line-by-line using mask animations with the clean geometric font) */}
+                  {/* Editorial Title Reveal inspired by minhpham.design typography & color pop */}
                   <SpotlightText>
-                    <div className="flex flex-col font-display font-extrabold text-4xl sm:text-5xl lg:text-7xl leading-[1.05] tracking-tight text-silver-secondary select-none">
+                    <div className="flex flex-col font-display font-black text-5xl sm:text-6xl lg:text-8xl leading-[0.95] tracking-tighter uppercase select-none">
                       <div className="overflow-hidden py-1 -my-1">
-                        <motion.span className="inline-block" variants={lineVariants}>
+                        <motion.span className="inline-block text-silver-secondary" variants={lineVariants}>
                           M. Ahmad
                         </motion.span>
                       </div>
                       <div className="overflow-hidden py-1 -my-1">
-                        <motion.span className="inline-block" variants={lineVariants}>
+                        <motion.span className="inline-block text-lime-accent" variants={lineVariants}>
                           Ilyas
                         </motion.span>
                       </div>
@@ -183,13 +184,13 @@ export default function Home() {
                 <motion.div variants={itemVariants} style={{ transform: "translateZ(20px)" }} className="w-full">
                   <TextCycler
                     items={roles}
-                    className="text-xl sm:text-2xl lg:text-4xl font-display font-semibold text-silver-primary tracking-tight leading-normal"
+                    className="text-xl sm:text-2xl lg:text-3xl font-display font-bold text-silver-primary tracking-tight uppercase"
                   />
                 </motion.div>
 
                 {/* Premium 3-Line Description */}
                 <motion.div variants={itemVariants} style={{ transform: "translateZ(10px)" }} className="max-w-xl pt-1">
-                  <p className="text-sm sm:text-base text-silver-primary/60 leading-relaxed font-light tracking-wide">
+                  <p className="text-sm sm:text-base text-body-text leading-relaxed font-light tracking-wide">
                     Crafting modern, high-performance web applications using Next.js and React.
                     Engineering interactive user interfaces, clean component structures, and
                     immersive digital architectures with meticulous detail.

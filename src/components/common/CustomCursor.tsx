@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export default function CustomCursor() {
-  const [cursorState, setCursorState] = useState<"default" | "hover" | "magnetic" | "hidden">(() => {
+  const [cursorState, setCursorState] = useState<"default" | "hover" | "magnetic" | "spotlight" | "hidden">(() => {
     if (typeof window !== "undefined") {
       const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
       if (isTouchDevice) return "hidden";
@@ -72,10 +72,13 @@ export default function CustomCursor() {
       const target = e.target as HTMLElement;
       if (!target) return;
 
+      const isSpotlight = target.closest("[data-cursor-spotlight]") || target.closest(".spotlight-text-container");
       const isMagnetic = target.closest("[data-cursor-magnetic]");
       const isInteractive = target.closest("button, a, [role='button'], input, select, textarea");
 
-      if (isMagnetic) {
+      if (isSpotlight) {
+        setCursorState("spotlight");
+      } else if (isMagnetic) {
         setCursorState("magnetic");
       } else if (isInteractive) {
         setCursorState("hover");
@@ -99,48 +102,70 @@ export default function CustomCursor() {
   // Visual variants for the trailing outer ring
   const ringVariants = {
     default: {
+      opacity: 1,
+      scale: 1,
       width: 24,
       height: 24,
-      borderColor: "#D9D9D9",
+      borderColor: "#CFC6B8",
       backgroundColor: "rgba(217, 217, 217, 0)",
     },
     hover: {
+      opacity: 1,
+      scale: 1,
       width: 48,
       height: 48,
-      borderColor: "#C6FF00",
-      backgroundColor: "rgba(198, 255, 0, 0.04)",
+      borderColor: "#F45A37",
+      backgroundColor: "rgba(244, 90, 55, 0.04)",
     },
     magnetic: {
+      opacity: 1,
+      scale: 1,
       width: 60,
       height: 60,
-      borderColor: "#C6FF00",
-      backgroundColor: "rgba(198, 255, 0, 0.08)",
+      borderColor: "#F45A37",
+      backgroundColor: "rgba(244, 90, 55, 0.08)",
+    },
+    spotlight: {
+      opacity: 0,
+      scale: 0,
+      width: 24,
+      height: 24,
+      borderColor: "transparent",
+      backgroundColor: "transparent",
     },
   };
 
   // Visual variants for the inner dot pointer
   const dotVariants = {
     default: {
+      opacity: 1,
       scale: 1,
-      backgroundColor: "#C6FF00",
+      backgroundColor: "#F45A37",
     },
     hover: {
+      opacity: 1,
       scale: 1.8,
-      backgroundColor: "#C6FF00",
+      backgroundColor: "#F45A37",
     },
     magnetic: {
+      opacity: 1,
       scale: 0,
-      backgroundColor: "#8AC600",
+      backgroundColor: "#D94A2C",
+    },
+    spotlight: {
+      opacity: 0,
+      scale: 0,
+      backgroundColor: "transparent",
     },
   };
 
   return (
     <>
-      {/* Inner Dot: precise coordinates, contrast blend mode */}
+      {/* Inner Dot: precise coordinates */}
       <motion.div
         aria-hidden="true"
         role="presentation"
-        className="fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-50 mix-blend-difference"
+        className="fixed top-0 left-0 w-1.5 h-1.5 rounded-full pointer-events-none z-50"
         style={{
           x: cursorX,
           y: cursorY,
@@ -152,11 +177,11 @@ export default function CustomCursor() {
         variants={dotVariants}
         transition={{ type: "spring", stiffness: 450, damping: 28 }}
       />
-      {/* Outer Ring: trailing position, rotates and stretches based on velocity */}
+      {/* Outer Ring: trailing position */}
       <motion.div
         aria-hidden="true"
         role="presentation"
-        className="fixed top-0 left-0 rounded-full border pointer-events-none z-50 flex items-center justify-center mix-blend-difference"
+        className="fixed top-0 left-0 rounded-full border pointer-events-none z-50 flex items-center justify-center"
         style={{
           x: ringX,
           y: ringY,

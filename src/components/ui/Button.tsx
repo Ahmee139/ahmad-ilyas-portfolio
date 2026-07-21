@@ -38,25 +38,25 @@ export default function Button({
 
   // Variant styles and hover slide background colors
   const variantStyles = {
-    primary: "bg-lime-accent text-background-dark border border-lime-accent",
-    secondary: "bg-transparent text-silver-primary border border-silver-primary/30 hover:border-silver-secondary",
-    glass: "bg-white/5 text-silver-secondary border border-white/10 backdrop-blur-md hover:border-white/20",
-    "lime-outline": "bg-transparent text-lime-accent border border-lime-accent/40 hover:border-lime-accent",
+    primary: "bg-lime-accent text-white border border-lime-accent",
+    secondary: "bg-transparent text-white border border-white/20 hover:border-lime-accent",
+    glass: "bg-white/5 text-white border border-white/10 backdrop-blur-md hover:border-white/20",
+    "lime-outline": "bg-transparent text-white border border-lime-accent/50 hover:border-lime-accent",
   };
 
   // Background slides
   const slideBgColor = {
     primary: "bg-lime-dark",
-    secondary: "bg-silver-secondary",
+    secondary: "bg-lime-accent",
     glass: "bg-white/10",
     "lime-outline": "bg-lime-accent",
   };
 
   const textHoverColor = {
-    primary: "text-background-dark",
-    secondary: "text-background-dark",
-    glass: "text-silver-secondary",
-    "lime-outline": "text-background-dark",
+    primary: "text-white",
+    secondary: "text-white",
+    glass: "text-white",
+    "lime-outline": "text-white",
   };
 
   const content = (

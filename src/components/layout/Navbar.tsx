@@ -29,29 +29,16 @@ function Logo() {
       className="group relative flex items-baseline gap-[0.2em] font-display select-none cursor-pointer transition-transform duration-500 ease-[0.16,1,0.3,1] hover:scale-[1.03]"
       aria-label="Scroll to top"
     >
-      {/* Shimmer overlay on hover */}
-      <span
-        className="absolute inset-0 z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{
-          background: "linear-gradient(90deg, transparent 0%, rgba(242,242,242,0.25) 45%, rgba(198,255,0,0.15) 55%, transparent 100%)",
-          backgroundSize: "200% 100%",
-          WebkitBackgroundClip: "text",
-          backgroundClip: "text",
-          animation: "shimmer 1.2s ease-in-out forwards",
-        }}
-        aria-hidden="true"
-      />
-
-      <span className="text-[13px] md:text-[15px] font-medium text-silver-primary tracking-wide transition-colors duration-500">
+      <span className="text-[13px] md:text-[15px] font-bold text-[#060606]/85 tracking-wide transition-colors duration-500">
         My
       </span>
 
-      <span className="text-[17px] md:text-[19px] font-bold text-silver-secondary tracking-[0.02em] transition-colors duration-500">
+      <span className="text-[17px] md:text-[19px] font-black text-[#060606] tracking-[0.02em] transition-colors duration-500">
         Portfolio
       </span>
 
       <span
-        className="inline-block w-[4px] h-[4px] rounded-full bg-lime-accent ml-[2px] mb-[2px] opacity-60 group-hover:opacity-100 transition-opacity duration-500 group-hover:shadow-[0_0_6px_rgba(198,255,0,0.5)]"
+        className="inline-block w-[4px] h-[4px] rounded-full bg-white ml-[2px] mb-[2px] opacity-90 group-hover:opacity-100 transition-opacity duration-500"
         aria-hidden="true"
       />
     </a>
@@ -85,12 +72,12 @@ function NavLink({
       className="group relative py-2 cursor-pointer"
     >
       <motion.span
-        className="block text-[12px] md:text-[13px] font-medium tracking-[0.08em] uppercase transition-colors duration-[450ms]"
+        className="block text-[12px] md:text-[13px] font-display font-bold tracking-[0.12em] uppercase transition-colors duration-300"
         style={{
-          color: (isActive || isHovered) ? "#F2F2F2" : "rgba(255,255,255,0.65)",
+          color: (isActive || isHovered) ? "#FFFFFF" : "#060606",
         }}
         whileHover={{ y: -2 }}
-        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
       >
         {item.label}
       </motion.span>
@@ -99,10 +86,10 @@ function NavLink({
       {showUnderline && (
         <motion.span
           layoutId="nav-underline"
-          className="absolute bottom-0 left-1/4 right-1/4 h-[2px] bg-lime-accent rounded-full"
+          className="absolute bottom-0 left-1/4 right-1/4 h-[2px] bg-white rounded-full"
           transition={{ type: "spring", stiffness: 380, damping: 30 }}
           style={{
-            boxShadow: "0 0 8px rgba(198,255,0,0.4)",
+            boxShadow: "0 0 8px rgba(255,255,255,0.7)",
           }}
         />
       )}
@@ -130,11 +117,11 @@ function NavLinkVertical({
       className="group relative py-1.5 cursor-pointer text-center"
     >
       <motion.span
-        className="block text-[11px] font-semibold tracking-[0.08em] uppercase transition-colors duration-300"
+        className="block text-[12px] md:text-[13px] font-display font-bold tracking-[0.12em] uppercase transition-colors duration-300"
         style={{
-          color: isActive ? "#C6FF00" : "rgba(255,255,255,0.6)",
+          color: isActive ? "#FFFFFF" : "#060606",
         }}
-        whileHover={{ scale: 1.08, color: "#F2F2F2" }}
+        whileHover={{ scale: 1.08, color: "#FFFFFF" }}
       >
         {item.label}
       </motion.span>
@@ -153,18 +140,18 @@ function HamburgerToggle({
   return (
     <button
       onClick={onClick}
-      className="relative w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 cursor-pointer transition-colors duration-300 hover:border-lime-accent/40"
+      className="relative w-10 h-10 flex items-center justify-center rounded-full bg-[#060606]/10 border border-[#060606]/20 cursor-pointer transition-colors duration-300 hover:bg-[#060606]/20"
       aria-label={isOpen ? "Close menu" : "Open menu"}
       aria-expanded={isOpen}
     >
       <div className="flex flex-col items-center justify-center gap-[5px] w-[16px]">
         <motion.span
-          className="block w-full h-[1.5px] bg-silver-secondary rounded-full origin-center"
+          className="block w-full h-[1.5px] bg-[#060606] rounded-full origin-center"
           animate={isOpen ? { rotate: 45, y: 3.25 } : { rotate: 0, y: 0 }}
           transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
         />
         <motion.span
-          className="block w-full h-[1.5px] bg-silver-secondary rounded-full origin-center"
+          className="block w-full h-[1.5px] bg-[#060606] rounded-full origin-center"
           animate={isOpen ? { rotate: -45, y: -3.25 } : { rotate: 0, y: 0 }}
           transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
         />
@@ -237,9 +224,13 @@ export default function Navbar() {
     // Desktop Docking trigger (dock at 220px, restore at 120px)
     if (isDesktop) {
       if (latest > 220) {
-        setIsDocked(true);
+        if (!isDocked) {
+          setIsDocked(true);
+          setIsCollapsed(true); // Collapses to 4-dot menu button by default when scrolling down!
+        }
       } else if (latest < 120) {
         setIsDocked(false);
+        setIsCollapsed(false);
       }
     } else {
       setIsDocked(false);
@@ -276,65 +267,65 @@ export default function Navbar() {
     const originalTop = isScrolled ? 8 : 16;
 
     if (isDesktop) {
-      // DESKTOP MORPHING SEQUENCE
+      // DESKTOP MORPHING SEQUENCE: Morphs to right-center collapsed menu button on scroll
       if (isDocked) {
-        // Morph to right-centered vertical dock
-        const targetHeight = isCollapsed ? 72 : 440;
-        const targetBorderRadius = isCollapsed ? "36px" : "32px";
+        const targetWidth = isCollapsed ? 64 : 108;
+        const targetHeight = isCollapsed ? 64 : 400;
+        const targetBorderRadius = isCollapsed ? "32px" : "28px";
 
         // Vertical Center Position
         const deltaY = windowSize.h / 2 - originalTop - targetHeight / 2;
 
         // Calculate translation delta to position perfectly on the right (32px padding)
-        const deltaX = (windowSize.w - 32 - 36) - (windowSize.w / 2);
+        const deltaX = (windowSize.w - 32 - targetWidth / 2) - (windowSize.w / 2);
 
         // Animate wrapper position and size
         gsap.to(wrapper, {
           x: deltaX,
           y: deltaY,
-          width: 72,
+          width: targetWidth,
           height: targetHeight,
-          duration: 0.9,
+          duration: 0.8,
           ease: "power4.inOut",
         });
 
         // Animate inner nav border radius
         gsap.to(nav, {
           borderRadius: targetBorderRadius,
-          duration: 0.9,
+          duration: 0.8,
           ease: "power4.inOut",
         });
 
-        // Toggle layout transparencies & pointer availability
-        gsap.to(horizontalRef.current, { opacity: 0, pointerEvents: "none", duration: 0.3 });
+        // Toggle layout transparencies cleanly
+        gsap.to(horizontalRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
         
         if (isCollapsed) {
-          gsap.to(verticalRef.current, { opacity: 0, pointerEvents: "none", duration: 0.3 });
-          gsap.to(collapsedIconRef.current, { opacity: 1, scale: 1, pointerEvents: "auto", duration: 0.4, delay: 0.1 });
+          gsap.to(verticalRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
+          gsap.to(collapsedIconRef.current, { autoAlpha: 1, scale: 1, pointerEvents: "auto", duration: 0.3, delay: 0.15 });
         } else {
-          gsap.to(verticalRef.current, { opacity: 1, pointerEvents: "auto", duration: 0.4, delay: 0.1 });
-          gsap.to(collapsedIconRef.current, { opacity: 0, scale: 0.8, pointerEvents: "none", duration: 0.3 });
+          gsap.to(verticalRef.current, { autoAlpha: 1, pointerEvents: "auto", duration: 0.35, delay: 0.2 });
+          gsap.to(collapsedIconRef.current, { autoAlpha: 0, scale: 0.8, pointerEvents: "none", duration: 0.15 });
         }
       } else {
-        // Morph back to standard horizontal header bar
+        // Morph back to standard horizontal header bar at top
         gsap.to(wrapper, {
           x: 0,
           y: 0,
           width: "78%",
           height: isScrolled ? 56 : 64,
-          duration: 0.9,
+          duration: 0.8,
           ease: "power4.inOut",
         });
 
         gsap.to(nav, {
           borderRadius: "9999px",
-          duration: 0.9,
+          duration: 0.8,
           ease: "power4.inOut",
         });
 
-        gsap.to(horizontalRef.current, { opacity: 1, pointerEvents: "auto", duration: 0.4, delay: 0.1 });
-        gsap.to(verticalRef.current, { opacity: 0, pointerEvents: "none", duration: 0.3 });
-        gsap.to(collapsedIconRef.current, { opacity: 0, scale: 0.8, pointerEvents: "none", duration: 0.3 });
+        gsap.to(horizontalRef.current, { autoAlpha: 1, pointerEvents: "auto", duration: 0.35, delay: 0.2 });
+        gsap.to(verticalRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
+        gsap.to(collapsedIconRef.current, { autoAlpha: 0, scale: 0.8, pointerEvents: "none", duration: 0.15 });
       }
     } else {
       // MOBILE MORPHING SEQUENCE
@@ -359,10 +350,10 @@ export default function Navbar() {
             ease: "power4.inOut",
           });
 
-          // Opacity Toggles
-          gsap.to(mobileNormalRef.current, { opacity: 0, pointerEvents: "none", duration: 0.2 });
-          gsap.to(mobileFloatingIconRef.current, { opacity: 0, pointerEvents: "none", duration: 0.2 });
-          gsap.to(mobileFloatingMenuRef.current, { opacity: 1, pointerEvents: "auto", duration: 0.4, delay: 0.1 });
+          // Opacity Toggles using autoAlpha for instant visibility removal
+          gsap.to(mobileNormalRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
+          gsap.to(mobileFloatingIconRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
+          gsap.to(mobileFloatingMenuRef.current, { autoAlpha: 1, pointerEvents: "auto", duration: 0.35, delay: 0.2 });
         } else {
           // Floating sticky circle button on mobile (right side, vertically centered) - matching desktop style
           const deltaX = (windowSize.w - 24 - 36) - (windowSize.w / 2);
@@ -384,9 +375,9 @@ export default function Navbar() {
           });
 
           // Opacity Toggles
-          gsap.to(mobileNormalRef.current, { opacity: 0, pointerEvents: "none", duration: 0.2 });
-          gsap.to(mobileFloatingIconRef.current, { opacity: 1, pointerEvents: "auto", duration: 0.4, delay: 0.1 });
-          gsap.to(mobileFloatingMenuRef.current, { opacity: 0, pointerEvents: "none", duration: 0.2 });
+          gsap.to(mobileNormalRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
+          gsap.to(mobileFloatingIconRef.current, { autoAlpha: 1, pointerEvents: "auto", duration: 0.35, delay: 0.2 });
+          gsap.to(mobileFloatingMenuRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
         }
       } else {
         // Morph back to full horizontal mobile menu bar at top
@@ -409,9 +400,9 @@ export default function Navbar() {
         });
 
         // Opacity Toggles
-        gsap.to(mobileNormalRef.current, { opacity: 1, pointerEvents: "auto", duration: 0.4, delay: 0.1 });
-        gsap.to(mobileFloatingIconRef.current, { opacity: 0, pointerEvents: "none", duration: 0.2 });
-        gsap.to(mobileFloatingMenuRef.current, { opacity: 0, pointerEvents: "none", duration: 0.2 });
+        gsap.to(mobileNormalRef.current, { autoAlpha: 1, pointerEvents: "auto", duration: 0.35, delay: 0.25 });
+        gsap.to(mobileFloatingIconRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
+        gsap.to(mobileFloatingMenuRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
       }
     }
   }, [isDesktop, isDocked, isMobileScrolled, isCollapsed, mobileOpen, isScrolled, windowSize]);
@@ -513,21 +504,17 @@ export default function Navbar() {
           height: isScrolled ? "56px" : "64px",
         }}
       >
-        {/* Inner Nav Panel */}
+        {/* Inner Nav Panel - Solid/Translucent Orange Background */}
         <motion.nav
           ref={navRef}
-          className="w-full h-full relative overflow-hidden flex items-center justify-between rounded-full bg-background-dark/58 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.15)]"
+          className="w-full h-full relative overflow-hidden flex items-center justify-between rounded-full bg-lime-accent shadow-none transition-shadow duration-300 hover:shadow-lg hover:shadow-lime-accent/20"
           animate={{
             y: isHidden ? -100 : 0,
-            backgroundColor: isScrolled ? "rgba(8,8,8,0.75)" : "rgba(8,8,8,0.58)",
-            backdropFilter: isScrolled ? "blur(24px)" : "blur(18px)",
+            backgroundColor: (isDocked && isCollapsed) ? "rgba(0,0,0,0)" : "#F45A37",
           }}
           transition={{
             duration: 0.5,
             ease: [0.16, 1, 0.3, 1],
-          }}
-          style={{
-            border: "1px solid rgba(255,255,255,0.08)",
           }}
           role="navigation"
           aria-label="Main navigation"
@@ -535,10 +522,11 @@ export default function Navbar() {
           {/* ────────────────── DESKTOP CONTENT ────────────────── */}
           {isDesktop && (
             <div className="w-full h-full relative">
-              {/* A. Horizontal Layout Layer */}
+              {/* A. Horizontal Layout Layer - hidden when docked */}
               <div
                 ref={horizontalRef}
-                className="absolute inset-0 flex items-center justify-between w-full h-full px-8"
+                style={{ display: isDocked ? "none" : "flex" }}
+                className="absolute inset-0 flex items-center justify-between w-full h-full px-8 overflow-hidden"
               >
                 {/* Logo */}
                 <motion.div variants={childVariants}>
@@ -572,7 +560,7 @@ export default function Navbar() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="Open Ahmad Ilyas Resume"
-                      className="inline-block px-7 py-2.5 text-[11px] font-medium tracking-[0.08em] uppercase rounded-full border border-white/15 text-silver-secondary cursor-pointer select-none transition-all duration-[450ms] ease-[0.16,1,0.3,1] hover:bg-lime-accent hover:text-background-dark hover:border-lime-accent hover:scale-[1.04] hover:shadow-[0_0_20px_rgba(198,255,0,0.15)]"
+                      className="inline-block px-7 py-2.5 text-[12px] md:text-[13px] font-display font-bold tracking-[0.12em] uppercase rounded-full border border-[#060606]/30 text-[#060606] cursor-pointer select-none transition-all duration-[450ms] ease-[0.16,1,0.3,1] hover:bg-[#060606] hover:text-[#F45A37] hover:border-[#060606] hover:scale-[1.04]"
                     >
                       Resume
                     </a>
@@ -580,10 +568,11 @@ export default function Navbar() {
                 </motion.div>
               </div>
 
-              {/* B. Vertical Layout Layer */}
+              {/* B. Vertical Layout Layer - shown only when docked & expanded */}
               <div
                 ref={verticalRef}
-                className="absolute inset-0 flex flex-col items-center justify-between w-full h-full py-8 opacity-0 pointer-events-none z-10"
+                style={{ display: isDocked && !isCollapsed ? "flex" : "none" }}
+                className="absolute inset-0 flex flex-col items-center justify-between w-full h-full py-8 z-10"
               >
                 <div className="flex flex-col items-center gap-7 w-full">
                   {/* Vertical Menu Links */}
@@ -602,7 +591,7 @@ export default function Navbar() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="Open Ahmad Ilyas Resume"
-                    className="text-[11px] font-semibold tracking-[0.08em] uppercase text-silver-primary/80 hover:text-lime-accent transition-colors duration-300"
+                    className="text-[12px] md:text-[13px] font-display font-bold tracking-[0.12em] uppercase text-[#060606]/80 hover:text-white transition-colors duration-300"
                   >
                     Resume
                   </a>
@@ -611,7 +600,7 @@ export default function Navbar() {
                 {/* Collapse Button */}
                 <button
                   onClick={() => setIsCollapsed(true)}
-                  className="w-8 h-8 rounded-full border border-white/10 hover:border-lime-accent/30 hover:bg-lime-accent/5 flex items-center justify-center text-silver-secondary hover:text-lime-accent transition-all cursor-pointer"
+                  className="w-8 h-8 rounded-full bg-[#060606]/10 hover:bg-[#060606] border border-[#060606]/20 flex items-center justify-center text-[#060606] hover:text-[#F45A37] transition-all cursor-pointer"
                   aria-label="Collapse Navigation"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -620,22 +609,23 @@ export default function Navbar() {
                 </button>
               </div>
 
-              {/* C. Collapsed Menu Grid Icon Layer */}
+              {/* C. Collapsed Menu Grid Icon Layer - shown only when docked & collapsed */}
               <div
                 ref={collapsedIconRef}
-                className="absolute inset-0 flex items-center justify-center w-full h-full opacity-0 pointer-events-none z-20"
+                style={{ display: isDocked && isCollapsed ? "flex" : "none" }}
+                className="absolute inset-0 flex items-center justify-center w-full h-full z-20"
               >
                 <button
                   onClick={() => setIsCollapsed(false)}
-                  className="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:border-lime-accent/40 flex items-center justify-center text-silver-secondary hover:text-lime-accent transition-all cursor-pointer"
+                  className="w-12 h-12 rounded-full bg-[#060606] border border-white/10 hover:border-[#F45A37] hover:scale-105 flex items-center justify-center text-white transition-all duration-300 cursor-pointer shadow-lg hover:shadow-[0_0_20px_rgba(244,90,55,0.3)]"
                   aria-label="Expand Navigation"
                 >
                   {/* Luxury 4-dot Grid indicator */}
                   <div className="grid grid-cols-2 gap-[4px] w-[14px] h-[14px]">
-                    <span className="w-[5px] h-[5px] rounded-full bg-lime-accent" />
-                    <span className="w-[5px] h-[5px] rounded-full bg-silver-primary" />
-                    <span className="w-[5px] h-[5px] rounded-full bg-silver-primary" />
-                    <span className="w-[5px] h-[5px] rounded-full bg-lime-accent" />
+                    <span className="w-[5px] h-[5px] rounded-full bg-white" />
+                    <span className="w-[5px] h-[5px] rounded-full bg-[#F45A37]" />
+                    <span className="w-[5px] h-[5px] rounded-full bg-[#F45A37]" />
+                    <span className="w-[5px] h-[5px] rounded-full bg-white" />
                   </div>
                 </button>
               </div>
@@ -688,7 +678,7 @@ export default function Navbar() {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label="Open Ahmad Ilyas Resume"
-                          className="text-[11px] font-semibold tracking-[0.08em] uppercase text-silver-primary/80 hover:text-lime-accent transition-colors duration-300"
+                          className="text-[12px] md:text-[13px] font-display font-bold tracking-[0.12em] uppercase text-[#060606]/80 hover:text-white transition-colors duration-300"
                         >
                           Resume
                         </a>
@@ -705,15 +695,15 @@ export default function Navbar() {
               >
                 <button
                   onClick={() => setMobileOpen(true)}
-                  className="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:border-lime-accent/40 flex items-center justify-center text-silver-secondary hover:text-lime-accent transition-all cursor-pointer"
+                  className="w-12 h-12 rounded-full bg-[#060606] border border-[#060606] flex items-center justify-center text-white transition-all cursor-pointer shadow-lg"
                   aria-label="Open Mobile Menu"
                 >
                   {/* Luxury 4-dot Grid indicator */}
                   <div className="grid grid-cols-2 gap-[4px] w-[14px] h-[14px]">
-                    <span className="w-[5px] h-[5px] rounded-full bg-lime-accent" />
-                    <span className="w-[5px] h-[5px] rounded-full bg-silver-primary" />
-                    <span className="w-[5px] h-[5px] rounded-full bg-silver-primary" />
-                    <span className="w-[5px] h-[5px] rounded-full bg-lime-accent" />
+                    <span className="w-[5px] h-[5px] rounded-full bg-white" />
+                    <span className="w-[5px] h-[5px] rounded-full bg-[#F45A37]" />
+                    <span className="w-[5px] h-[5px] rounded-full bg-[#F45A37]" />
+                    <span className="w-[5px] h-[5px] rounded-full bg-white" />
                   </div>
                 </button>
               </div>
@@ -752,7 +742,7 @@ export default function Navbar() {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label="Open Ahmad Ilyas Resume"
-                          className="text-[11px] font-semibold tracking-[0.08em] uppercase text-silver-primary/80 hover:text-lime-accent transition-colors duration-300"
+                          className="text-[12px] md:text-[13px] font-display font-bold tracking-[0.12em] uppercase text-[#060606]/80 hover:text-white transition-colors duration-300"
                         >
                           Resume
                         </a>

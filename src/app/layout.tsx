@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Syne, Space_Grotesk, Playfair_Display } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
 import { LoaderProvider } from "@/context/LoaderContext";
 import SmoothScrollProvider from "@/components/layout/SmoothScrollProvider";
@@ -11,20 +11,8 @@ import AmbientGlow from "@/components/common/AmbientGlow";
 import Particles from "@/components/common/Particles";
 import Navbar from "@/components/layout/Navbar";
 
-const syne = Syne({
-  variable: "--font-syne",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const playfairDisplay = Playfair_Display({
-  variable: "--font-serif",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
   display: "swap",
 });
@@ -57,7 +45,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${syne.variable} ${spaceGrotesk.variable} ${playfairDisplay.variable} dark antialiased`}
+      className={`${geist.variable} dark antialiased`}
     >
       <body>
         <LoaderProvider>

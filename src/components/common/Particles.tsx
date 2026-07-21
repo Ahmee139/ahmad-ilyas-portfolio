@@ -60,8 +60,8 @@ export default function Particles() {
         if (!ctx) return;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        // Draw in lime accent shade with opacity mapping
-        ctx.fillStyle = `rgba(198, 255, 0, ${this.opacity})`;
+        // Draw in orange accent shade with opacity mapping
+        ctx.fillStyle = `rgba(244, 90, 55, ${this.opacity})`;
         ctx.fill();
       }
     }

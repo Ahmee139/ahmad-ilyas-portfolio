@@ -20,12 +20,12 @@ export default function Heading({
   const Tag = tag;
 
   const baseStyles = {
-    h1: "text-5xl md:text-7xl lg:text-8xl font-bold font-display tracking-tighter leading-[0.9]",
-    h2: "text-4xl md:text-5xl lg:text-6xl font-bold font-display tracking-tight leading-tight",
-    h3: "text-3xl md:text-4xl lg:text-5xl font-bold font-display tracking-tight leading-tight",
-    h4: "text-2xl md:text-3xl lg:text-4xl font-bold font-display tracking-tight leading-tight",
-    h5: "text-xl md:text-2xl lg:text-3xl font-bold font-display tracking-normal",
-    h6: "text-lg md:text-xl lg:text-2xl font-semibold font-display tracking-normal",
+    h1: "text-5xl md:text-7xl lg:text-8xl font-black font-display tracking-tighter uppercase leading-[0.95]",
+    h2: "text-4xl md:text-5xl lg:text-6xl font-black font-display tracking-tighter uppercase leading-tight",
+    h3: "text-3xl md:text-4xl lg:text-5xl font-black font-display tracking-tighter uppercase leading-tight",
+    h4: "text-2xl md:text-3xl lg:text-4xl font-black font-display tracking-tighter uppercase leading-tight",
+    h5: "text-xl md:text-2xl lg:text-3xl font-black font-display tracking-tighter uppercase",
+    h6: "text-lg md:text-xl lg:text-2xl font-black font-display tracking-tighter uppercase",
   };
 
   // If reveal is disabled, parse and render normal elements
@@ -99,7 +99,10 @@ export default function Heading({
     <SpotlightText>
       <Tag className={cn(baseStyles[tag], "overflow-hidden", className)}>
         <motion.span
-          className="inline-flex flex-wrap"
+          className={cn(
+            "inline-flex flex-wrap",
+            className?.includes("text-center") && "justify-center text-center w-full"
+          )}
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"

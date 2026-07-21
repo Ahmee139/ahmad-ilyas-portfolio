@@ -84,7 +84,7 @@ export default function About() {
               className="portrait-container relative w-[300px] h-[400px] md:w-[380px] md:h-[500px] rounded-3xl overflow-hidden cursor-none"
             >
               {/* Very soft border glow */}
-              <div className="absolute inset-0 rounded-3xl border border-lime-accent/10 shadow-[0_0_40px_rgba(198,255,0,0.05)] pointer-events-none z-20" />
+              <div className="absolute inset-0 rounded-3xl border border-lime-accent/10 shadow-[0_0_40px_rgba(244,90,55,0.05)] pointer-events-none z-20" />
               
               {/* Portrait Image — transparent background PNG.
                   grayscale(1) applies cinematic B&W, hover restores 20% color via CSS class. */}
@@ -107,18 +107,18 @@ export default function About() {
         <div className="lg:col-span-7 space-y-8 text-left">
           <div className="space-y-4">
             <Reveal variant="fade-up" delay={0.1}>
-              <span className="font-mono text-xs md:text-sm tracking-[0.25em] text-lime-accent uppercase">
-                [02 / Identity]
+              <span className="font-mono text-xs md:text-sm tracking-[0.3em] font-semibold text-lime-accent uppercase">
+                [02 / IDENTITY]
               </span>
             </Reveal>
 
-            <Heading tag="h2" reveal={true} className="text-3xl md:text-5xl font-display font-bold leading-tight text-silver-secondary">
+            <Heading tag="h2" reveal={true} className="text-3xl md:text-5xl font-display font-black tracking-tighter uppercase text-silver-secondary">
               {"About {Me}"}
             </Heading>
           </div>
 
           {/* Professional Narrative */}
-          <div className="space-y-6 text-silver-primary/70 text-sm md:text-base leading-relaxed font-light tracking-wide max-w-xl">
+          <div className="space-y-6 text-body-text text-sm md:text-base leading-relaxed font-light tracking-wide max-w-xl">
             <Reveal variant="fade-up" delay={0.3}>
               <p>
                 I am a creative software engineer dedicated to crafting high-fidelity user 
@@ -139,7 +139,7 @@ export default function About() {
           {/* Skills Grid */}
           <div className="space-y-4 pt-4">
             <Reveal variant="fade-up" delay={0.5}>
-              <h4 className="font-mono text-xs tracking-wider uppercase text-silver-primary/40 select-none">
+              <h4 className="font-mono text-xs md:text-sm tracking-[0.3em] font-semibold uppercase text-muted-text select-none">
                 Core Stack & Technologies
               </h4>
             </Reveal>
@@ -154,15 +154,15 @@ export default function About() {
                   <div
                     onMouseEnter={() => setHoveredSkillIndex(index)}
                     // Added relative position, overflow-visible, and cursor-pointer to support layout underlines
-                    className="relative px-5 py-2.5 text-xs font-mono rounded-full border border-white/5 bg-white/2 text-silver-primary transition-all duration-500 ease-[0.16,1,0.3,1] hover:-translate-y-1 hover:bg-lime-accent/3 hover:text-lime-accent hover:border-lime-accent/40 hover:shadow-[0_0_15px_rgba(198,255,0,0.15)] select-none cursor-pointer"
+                    className="relative px-5 py-2.5 text-xs font-mono rounded-full border border-white/5 bg-white/2 text-silver-primary transition-all duration-500 ease-[0.16,1,0.3,1] hover:-translate-y-1 hover:bg-lime-accent/3 hover:text-lime-accent hover:border-lime-accent/40 hover:shadow-[0_0_15px_rgba(244,90,55,0.15)] select-none cursor-pointer"
                   >
                     <span className="relative z-10">{skill}</span>
 
-                    {/* Shared lime green indicator bar that slides/morphs to other items on hover */}
+                    {/* Shared orange indicator bar that slides/morphs to other items on hover */}
                     {hoveredSkillIndex === index && (
                       <motion.div
                         layoutId="skills-underline"
-                        className="absolute bottom-0 left-1/4 right-1/4 h-[2px] bg-lime-accent rounded-full shadow-[0_0_8px_rgba(198,255,0,0.5)]"
+                        className="absolute bottom-0 left-1/4 right-1/4 h-[2px] bg-lime-accent rounded-full shadow-[0_0_8px_rgba(244,90,55,0.5)]"
                         transition={{ type: "spring", stiffness: 380, damping: 30 }}
                       />
                     )}

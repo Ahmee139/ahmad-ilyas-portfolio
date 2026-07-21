@@ -67,10 +67,11 @@ export default function SpotlightText({ children, className }: SpotlightTextProp
   return (
     <div
       ref={containerRef}
+      data-cursor-spotlight="true"
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="relative overflow-visible group select-none w-full"
+      className="relative overflow-visible group select-none w-full spotlight-text-container"
     >
       {/* 1. Bottom Layer: Default Silver Typography */}
       <div className={className}>
@@ -91,7 +92,7 @@ export default function SpotlightText({ children, className }: SpotlightTextProp
         </div>
       </motion.div>
 
-      {/* Inject styling rules to force all elements inside the top layer to turn black */}
+      {/* Inject styling rules: normal text turns black (#060606), highlighted orange text turns pure white (#FFFFFF) */}
       <style jsx global>{`
         .spotlight-top-layer * {
           color: #060606 !important;
@@ -99,6 +100,12 @@ export default function SpotlightText({ children, className }: SpotlightTextProp
           border-color: transparent !important;
           box-shadow: none !important;
           text-shadow: none !important;
+        }
+        .spotlight-top-layer .text-lime-accent,
+        .spotlight-top-layer .text-orange-accent,
+        .spotlight-top-layer [class*="text-lime-accent"],
+        .spotlight-top-layer [class*="text-orange-accent"] {
+          color: #ffffff !important;
         }
       `}</style>
     </div>

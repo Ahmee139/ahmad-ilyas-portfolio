@@ -19,7 +19,7 @@ export default function Contact() {
   const springGlowY = useSpring(glowY, { damping: 50, stiffness: 20 });
 
   // Map coordinate springs to radial background template
-  const backgroundGlow = useMotionTemplate`radial-gradient(circle at ${springGlowX}% ${springGlowY}%, rgba(198, 255, 0, 0.025) 0%, transparent 65%)`;
+  const backgroundGlow = useMotionTemplate`radial-gradient(circle at ${springGlowX}% ${springGlowY}%, rgba(244, 90, 55, 0.025) 0%, transparent 65%)`;
 
   useEffect(() => {
     let angle = 0;
@@ -43,7 +43,7 @@ export default function Contact() {
   return (
     <SectionWrapper
       id="contact"
-      className="bg-background-dark border-t border-white/5 py-32 md:py-48 flex items-center justify-center relative overflow-hidden"
+      className="bg-background-dark border-t border-white/5 pt-28 pb-16 md:pt-36 md:pb-20 flex items-center justify-center relative overflow-hidden"
     >
       {/* Subtle slowly drifting radial background glow */}
       <motion.div
@@ -52,28 +52,28 @@ export default function Contact() {
         className="absolute inset-0 w-full h-full pointer-events-none z-0"
       />
 
-      <div className="w-full max-w-4xl mx-auto px-6 text-center relative z-10 space-y-10 md:space-y-12">
+      <div className="w-full max-w-4xl mx-auto px-6 text-center relative z-10 space-y-10 md:space-y-12 flex flex-col items-center justify-center">
         
         {/* Decorative Tag */}
         <Reveal variant="fade-up" delay={0.1}>
-          <span className="font-mono text-xs md:text-sm tracking-[0.25em] text-lime-accent uppercase">
-            [04 / Connection]
+          <span className="font-mono text-xs md:text-sm tracking-[0.3em] font-semibold text-lime-accent uppercase inline-block text-center">
+            [04 / CONNECTION]
           </span>
         </Reveal>
 
-        {/* Large Heading */}
+        {/* Premium Center-Aligned Heading with {Something} Orange Highlight */}
         <Heading
           tag="h2"
           reveal={true}
-          className="text-4xl md:text-6xl lg:text-7xl font-display font-extrabold tracking-tighter text-silver-secondary leading-none select-none max-w-2xl mx-auto"
+          className="text-4xl md:text-6xl lg:text-7xl font-display font-black tracking-tighter uppercase text-silver-secondary leading-tight select-none max-w-4xl mx-auto text-center"
         >
-          {"Let's {Build} Something Amazing"}
+          {"Let's Build {Something} Amazing"}
         </Heading>
 
         {/* Short One-Line Description */}
         <Reveal variant="fade-up" delay={0.3}>
-          <p className="text-sm md:text-base text-silver-primary/50 font-light tracking-wide max-w-md mx-auto leading-relaxed select-none">
-            {"Have a project in mind or want to collaborate? Get in touch and let's create a luxurious digital ecosystem together."}
+          <p className="text-sm md:text-base text-body-text font-light tracking-wide max-w-lg mx-auto leading-relaxed select-none text-center">
+            {"Have a project in mind or want to collaborate? Get in touch and let's create a memorable digital experience together."}
           </p>
         </Reveal>
 
@@ -85,13 +85,13 @@ export default function Contact() {
             <a
               href={contactData.email}
               aria-label="Send Email to Ahmad Ilyas"
-              className="relative group block overflow-hidden rounded-full p-[1.5px] cursor-none select-none transition-all duration-500 hover:shadow-[0_0_30px_rgba(198,255,0,0.18)]"
+              className="relative group block overflow-hidden rounded-full p-[1.5px] cursor-none select-none transition-all duration-500 hover:shadow-[0_0_30px_rgba(244,90,55,0.18)]"
             >
               {/* Conic sweep border container (rotates slowly, accelerates on hover) */}
-              <div className="absolute inset-[-150%] bg-[conic-gradient(from_0deg,#D9D9D9_0%,#D9D9D9_70%,#C6FF00_80%,#D9D9D9_90%,#D9D9D9_100%)] animate-[spin_5s_linear_infinite] group-hover:animate-[spin_2.5s_linear_infinite] opacity-50 group-hover:opacity-100 transition-all duration-500" />
+              <div className="absolute inset-[-150%] bg-[conic-gradient(from_0deg,#CFC6B8_0%,#CFC6B8_70%,#F45A37_80%,#CFC6B8_90%,#CFC6B8_100%)] animate-[spin_5s_linear_infinite] group-hover:animate-[spin_2.5s_linear_infinite] opacity-50 group-hover:opacity-100 transition-all duration-500" />
               
-              {/* Inner content layer: fills with lime green on hover */}
-              <div className="relative z-10 px-8 py-4 bg-background-dark rounded-full transition-colors duration-500 group-hover:bg-lime-accent flex items-center gap-3 font-mono text-xs md:text-sm tracking-widest uppercase text-silver-primary group-hover:text-background-dark">
+              {/* Inner content layer: fills with orange on hover */}
+              <div className="relative z-10 px-8 py-4 bg-background-dark rounded-full transition-colors duration-500 group-hover:bg-lime-accent flex items-center gap-3 font-mono text-xs md:text-sm tracking-widest uppercase text-silver-secondary group-hover:text-background-dark">
                 <FiMail className="text-base transition-transform duration-300 group-hover:scale-110" />
                 <span>Email Me</span>
               </div>
@@ -105,13 +105,13 @@ export default function Contact() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Chat with Ahmad Ilyas on WhatsApp"
-              className="relative group block overflow-hidden rounded-full p-[1.5px] cursor-none select-none transition-all duration-500 hover:shadow-[0_0_30px_rgba(198,255,0,0.18)]"
+              className="relative group block overflow-hidden rounded-full p-[1.5px] cursor-none select-none transition-all duration-500 hover:shadow-[0_0_30px_rgba(244,90,55,0.18)]"
             >
               {/* Conic sweep border container */}
-              <div className="absolute inset-[-150%] bg-[conic-gradient(from_0deg,#D9D9D9_0%,#D9D9D9_70%,#C6FF00_80%,#D9D9D9_90%,#D9D9D9_100%)] animate-[spin_5s_linear_infinite] group-hover:animate-[spin_2.5s_linear_infinite] opacity-50 group-hover:opacity-100 transition-all duration-500" />
+              <div className="absolute inset-[-150%] bg-[conic-gradient(from_0deg,#CFC6B8_0%,#CFC6B8_70%,#F45A37_80%,#CFC6B8_90%,#CFC6B8_100%)] animate-[spin_5s_linear_infinite] group-hover:animate-[spin_2.5s_linear_infinite] opacity-50 group-hover:opacity-100 transition-all duration-500" />
               
               {/* Inner content layer */}
-              <div className="relative z-10 px-8 py-4 bg-background-dark rounded-full transition-colors duration-500 group-hover:bg-lime-accent flex items-center gap-3 font-mono text-xs md:text-sm tracking-widest uppercase text-silver-primary group-hover:text-background-dark">
+              <div className="relative z-10 px-8 py-4 bg-background-dark rounded-full transition-colors duration-500 group-hover:bg-lime-accent flex items-center gap-3 font-mono text-xs md:text-sm tracking-widest uppercase text-silver-secondary group-hover:text-background-dark">
                 <FaWhatsapp className="text-base transition-transform duration-300 group-hover:scale-110" />
                 <span>WhatsApp</span>
               </div>
@@ -119,35 +119,6 @@ export default function Contact() {
           </Magnetic>
 
         </div>
-
-        {/* Direct Contact Details for Show Purpose in clean HUD style */}
-        <Reveal variant="fade-up" delay={0.4}>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-12 pt-8 text-xs md:text-sm font-mono tracking-widest text-silver-primary/40 select-none">
-            <a
-              href={contactData.email}
-              aria-label="Send Email to Ahmad Ilyas"
-              className="hover:text-lime-accent transition-colors duration-300 flex items-center gap-2 cursor-pointer"
-            >
-              <span>EMAIL:</span>
-              <span className="text-silver-secondary hover:underline underline-offset-4 decoration-lime-accent/50 transition-all font-light lowercase">
-                ahmadinfo139@gmail.com
-              </span>
-            </a>
-            
-            <a
-              href={contactData.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Chat with Ahmad Ilyas on WhatsApp"
-              className="hover:text-lime-accent transition-colors duration-300 flex items-center gap-2 cursor-pointer"
-            >
-              <span>WHATSAPP:</span>
-              <span className="text-silver-secondary hover:underline underline-offset-4 decoration-lime-accent/50 transition-all font-light">
-                +92 332 7288157
-              </span>
-            </a>
-          </div>
-        </Reveal>
 
       </div>
     </SectionWrapper>

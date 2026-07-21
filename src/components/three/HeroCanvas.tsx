@@ -13,8 +13,8 @@ function generateParticleData() {
   const pos = new Float32Array(PARTICLE_COUNT * 3);
   const col = new Float32Array(PARTICLE_COUNT * 3);
 
-  const colorLime = new THREE.Color("#C6FF00"); // Lime Accent
-  const colorSilver = new THREE.Color("#D9D9D9"); // Silver
+  const colorOrange = new THREE.Color("#F45A37"); // Warm Orange Accent
+  const colorSilver = new THREE.Color("#B7AEA2"); // Warm Stone Secondary Heading Accent
 
   let i3 = 0;
   for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -26,9 +26,9 @@ function generateParticleData() {
     pos[i3 + 1] = (Math.random() - 0.5) * 0.4; // Y
     pos[i3 + 2] = Math.sin(angle) * radius + (Math.random() - 0.5) * 0.15; // Z
 
-    // Dynamic color partitioning (silver: 65%, lime: 35%)
-    const isLime = Math.random() > 0.65;
-    const mixedColor = isLime ? colorLime : colorSilver;
+    // Dynamic color partitioning (silver: 65%, orange: 35%)
+    const isOrange = Math.random() > 0.65;
+    const mixedColor = isOrange ? colorOrange : colorSilver;
 
     col[i3] = mixedColor.r;
     col[i3 + 1] = mixedColor.g;
@@ -183,7 +183,7 @@ export default function HeroCanvas({ scrollProgress }: HeroCanvasProps) {
         className="w-full h-full z-10"
       >
         <ambientLight intensity={0.2} />
-        <pointLight position={[5, 5, 5]} intensity={0.5} color="#C6FF00" />
+        <pointLight position={[5, 5, 5]} intensity={0.5} color="#F45A37" />
         
         <ParticleWaves scrollProgress={scrollProgress} />
       </Canvas>

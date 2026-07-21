@@ -3,30 +3,37 @@
 @theme {
   --color-background-dark: #060606;
   --color-background-secondary: #0F0F0F;
-  --color-silver-primary: #D9D9D9;
-  --color-silver-secondary: #F2F2F2;
-  --color-lime-accent: #C6FF00;
-  --color-lime-dark: #8AC600;
+  --color-silver-primary: #B7AEA2;
+  --color-silver-secondary: #CFC6B8;
+  --color-nav-text: #C8C0B4;
+  --color-body-text: #9A948B;
+  --color-muted-text: #77716A;
+  --color-lime-accent: #F45A37;
+  --color-lime-dark: #D94A2C;
+  --color-orange-accent: #F45A37;
+  --color-orange-hover: #FF6A45;
+  --color-orange-pressed: #D94A2C;
 
-  --font-display: var(--font-syne), sans-serif;
-  --font-body: var(--font-space-grotesk), sans-serif;
-  --font-serif: var(--font-serif), serif;
+  --font-display: var(--font-geist), sans-serif;
+  --font-body: var(--font-geist), sans-serif;
+  --font-serif: var(--font-geist), sans-serif;
+  --font-mono: var(--font-geist), sans-serif;
 
   --animate-glow: glow 2s ease-in-out infinite alternate;
 
   @keyframes glow {
     from {
-      box-shadow: 0 0 10px rgba(198, 255, 0, 0.2), 0 0 20px rgba(198, 255, 0, 0.1);
+      box-shadow: 0 0 10px rgba(244, 90, 55, 0.2), 0 0 20px rgba(244, 90, 55, 0.1);
     }
     to {
-      box-shadow: 0 0 20px rgba(198, 255, 0, 0.4), 0 0 40px rgba(198, 255, 0, 0.2);
+      box-shadow: 0 0 20px rgba(244, 90, 55, 0.4), 0 0 40px rgba(244, 90, 55, 0.2);
     }
   }
 }
 
 :root {
   background-color: #060606;
-  color: #F2F2F2;
+  color: #CFC6B8;
   overflow-x: hidden;
 }
 
@@ -39,7 +46,7 @@
 body {
   font-family: var(--font-body);
   background-color: #060606;
-  color: #F2F2F2;
+  color: #CFC6B8;
   min-height: 100vh;
   margin: 0;
   padding: 0;
@@ -57,7 +64,7 @@ body {
 
 /* Selection styles */
 ::selection {
-  background-color: #C6FF00;
+  background-color: #F45A37;
   color: #060606;
 }
 
@@ -71,13 +78,13 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #C6FF00;
+  background: #F45A37;
   border: 2px solid #060606;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #8AC600;
+  background: #FF6A45;
 }
 
 /* Noise Keyframes (shuffling background position to simulate film static) */
