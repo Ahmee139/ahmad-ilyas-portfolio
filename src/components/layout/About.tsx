@@ -59,7 +59,7 @@ export default function About() {
   ];
 
   return (
-    <SectionWrapper id="about" className="bg-background-dark border-t border-white/5 py-24 md:py-36">
+    <SectionWrapper id="about" className="bg-transparent border-t border-border-subtle !py-16 md:!py-24">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
         
         {/* Left Column: Interactive Portrait */}
@@ -154,7 +154,7 @@ export default function About() {
                   <div
                     onMouseEnter={() => setHoveredSkillIndex(index)}
                     // Added relative position, overflow-visible, and cursor-pointer to support layout underlines
-                    className="relative px-5 py-2.5 text-xs font-mono rounded-full border border-white/5 bg-white/2 text-silver-primary transition-all duration-500 ease-[0.16,1,0.3,1] hover:-translate-y-1 hover:bg-lime-accent/3 hover:text-lime-accent hover:border-lime-accent/40 hover:shadow-[0_0_15px_rgba(244,90,55,0.15)] select-none cursor-pointer"
+                    className="relative px-5 py-2.5 text-xs font-mono rounded-full border border-border-subtle bg-surface text-silver-primary transition-all duration-500 ease-[0.16,1,0.3,1] hover:-translate-y-1 hover:bg-lime-accent/3 hover:text-lime-accent hover:border-lime-accent/40 hover:shadow-[0_0_15px_rgba(244,90,55,0.15)] select-none cursor-pointer"
                   >
                     <span className="relative z-10">{skill}</span>
 

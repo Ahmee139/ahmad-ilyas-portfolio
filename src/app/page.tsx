@@ -64,10 +64,10 @@ export default function Home() {
   const translateY = useTransform(mouseY, [-0.5, 0.5], [-5, 5]);
 
   // Springs for liquid-smooth mouse responsiveness
-  const springRotateX = useSpring(rotateX, { damping: 25, stiffness: 150 });
-  const springRotateY = useSpring(rotateY, { damping: 25, stiffness: 150 });
-  const springTranslateX = useSpring(translateX, { damping: 25, stiffness: 150 });
-  const springTranslateY = useSpring(translateY, { damping: 25, stiffness: 150 });
+  const springRotateX = useSpring(rotateX, { damping: 32, stiffness: 120 });
+  const springRotateY = useSpring(rotateY, { damping: 32, stiffness: 120 });
+  const springTranslateX = useSpring(translateX, { damping: 32, stiffness: 120 });
+  const springTranslateY = useSpring(translateY, { damping: 32, stiffness: 120 });
 
   // 2. Scroll-Driven Transformations (scrollYProgress)
   const { scrollYProgress } = useScroll({
@@ -75,14 +75,14 @@ export default function Home() {
     offset: ["start start", "end end"],
   });
 
-  const scaleContent = useTransform(scrollYProgress, [0, 1], [1, 1.05]);
-  const scaleBackground = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
-  const opacityText = useTransform(scrollYProgress, [0, 0.85], [1, 0.25]);
+  const scaleContent = useTransform(scrollYProgress, [0, 1], [1, 1.04]);
+  const scaleBackground = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const opacityText = useTransform(scrollYProgress, [0, 0.85], [1, 0.3]);
 
   // Springs for smooth scroll dynamics (eliminates scrolling ticks/stutter)
-  const springScaleContent = useSpring(scaleContent, { damping: 30, stiffness: 180 });
-  const springScaleBackground = useSpring(scaleBackground, { damping: 30, stiffness: 180 });
-  const springOpacityText = useSpring(opacityText, { damping: 25, stiffness: 140 });
+  const springScaleContent = useSpring(scaleContent, { damping: 36, stiffness: 140 });
+  const springScaleBackground = useSpring(scaleBackground, { damping: 36, stiffness: 140 });
+  const springOpacityText = useSpring(opacityText, { damping: 30, stiffness: 110 });
 
   // 3. Staggered Post-Loader Entrance Sequence Variants
   const parentVariants = {
@@ -90,18 +90,18 @@ export default function Home() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2,
+        staggerChildren: 0.12,
+        delayChildren: 0.15,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 18 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] as const }, // easeOutExpo
+      transition: { duration: 1.05, ease: [0.16, 1, 0.3, 1] as const },
     },
   };
 
@@ -109,26 +109,31 @@ export default function Home() {
     hidden: { y: "105%" },
     visible: {
       y: 0,
-      transition: { duration: 1.1, ease: [0.16, 1, 0.3, 1] as const },
+      transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] as const },
     },
   };
 
   const canvasVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
+    hidden: { opacity: 0, scale: 0.96 },
     visible: {
       opacity: 1,
       scale: 1,
-      transition: { duration: 1.4, ease: [0.16, 1, 0.3, 1] as const },
+      transition: { duration: 1.5, ease: [0.16, 1, 0.3, 1] as const },
     },
   };
 
   return (
-    <div className="relative w-full bg-background-dark">
+    <div className="relative w-full bg-transparent">
       {/* 1. Hero Section Container (150vh parent enables scroll animation space) */}
-      <div id="hero" ref={containerRef} className="relative w-full h-[150vh] bg-background-dark">
+      <div id="hero" ref={containerRef} className="relative w-full h-[150vh] bg-transparent">
         {/* Sticky Viewport (keeps Hero locked during scroll transforms) */}
         <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
-          
+          {/* Hero atmosphere — clean white, no peach wash */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 pointer-events-none z-0"
+          />
+
           {/* Animated Wrapper: Handles slow global zoom on scroll */}
           <motion.div
             style={{ scale: springScaleContent }}

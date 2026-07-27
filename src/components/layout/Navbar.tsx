@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion";
 import { useLoader } from "@/context/LoaderContext";
 import Magnetic from "@/components/ui/Magnetic";
+import ThemeToggle from "@/components/common/ThemeToggle";
 import { gsap } from "@/utils/gsap-setup";
 
 /* ─── Constants ─── */
@@ -263,125 +264,206 @@ export default function Navbar() {
     const nav = navRef.current;
     if (!wrapper || !nav || windowSize.w === 0) return;
 
-    // Common positioning variables
     const originalTop = isScrolled ? 8 : 16;
+    const morphEase = "power3.inOut";
+    const morphDuration = 1.05;
+    const fadeOut = 0.22;
+    const fadeIn = 0.4;
 
     if (isDesktop) {
-      // DESKTOP MORPHING SEQUENCE: Morphs to right-center collapsed menu button on scroll
       if (isDocked) {
-        const targetWidth = isCollapsed ? 64 : 108;
-        const targetHeight = isCollapsed ? 64 : 400;
-        const targetBorderRadius = isCollapsed ? "32px" : "28px";
+        // Collapsed = clean circular button (no thick orange ring)
+        const targetWidth = isCollapsed ? 52 : 108;
+        const targetHeight = isCollapsed ? 52 : 400;
+        const targetBorderRadius = isCollapsed ? "9999px" : "28px";
 
-        // Vertical Center Position
         const deltaY = windowSize.h / 2 - originalTop - targetHeight / 2;
+        const deltaX = windowSize.w - 28 - targetWidth / 2 - windowSize.w / 2;
 
-        // Calculate translation delta to position perfectly on the right (32px padding)
-        const deltaX = (windowSize.w - 32 - targetWidth / 2) - (windowSize.w / 2);
-
-        // Animate wrapper position and size
         gsap.to(wrapper, {
           x: deltaX,
           y: deltaY,
           width: targetWidth,
           height: targetHeight,
-          duration: 0.8,
-          ease: "power4.inOut",
+          duration: morphDuration,
+          ease: morphEase,
+          overwrite: "auto",
         });
 
-        // Animate inner nav border radius
         gsap.to(nav, {
           borderRadius: targetBorderRadius,
-          duration: 0.8,
-          ease: "power4.inOut",
+          duration: morphDuration,
+          ease: morphEase,
+          overwrite: "auto",
         });
 
-        // Toggle layout transparencies cleanly
-        gsap.to(horizontalRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
-        
+        gsap.to(horizontalRef.current, {
+          autoAlpha: 0,
+          pointerEvents: "none",
+          duration: fadeOut,
+          overwrite: "auto",
+        });
+
         if (isCollapsed) {
-          gsap.to(verticalRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
-          gsap.to(collapsedIconRef.current, { autoAlpha: 1, scale: 1, pointerEvents: "auto", duration: 0.3, delay: 0.15 });
+          gsap.to(verticalRef.current, {
+            autoAlpha: 0,
+            pointerEvents: "none",
+            duration: fadeOut,
+            overwrite: "auto",
+          });
+          gsap.to(collapsedIconRef.current, {
+            autoAlpha: 1,
+            scale: 1,
+            pointerEvents: "auto",
+            duration: fadeIn,
+            delay: 0.28,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
         } else {
-          gsap.to(verticalRef.current, { autoAlpha: 1, pointerEvents: "auto", duration: 0.35, delay: 0.2 });
-          gsap.to(collapsedIconRef.current, { autoAlpha: 0, scale: 0.8, pointerEvents: "none", duration: 0.15 });
+          gsap.to(verticalRef.current, {
+            autoAlpha: 1,
+            pointerEvents: "auto",
+            duration: fadeIn,
+            delay: 0.28,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+          gsap.to(collapsedIconRef.current, {
+            autoAlpha: 0,
+            scale: 0.85,
+            pointerEvents: "none",
+            duration: fadeOut,
+            overwrite: "auto",
+          });
         }
       } else {
-        // Morph back to standard horizontal header bar at top
         gsap.to(wrapper, {
           x: 0,
           y: 0,
           width: "78%",
           height: isScrolled ? 56 : 64,
-          duration: 0.8,
-          ease: "power4.inOut",
+          duration: morphDuration,
+          ease: morphEase,
+          overwrite: "auto",
         });
 
         gsap.to(nav, {
           borderRadius: "9999px",
-          duration: 0.8,
-          ease: "power4.inOut",
+          duration: morphDuration,
+          ease: morphEase,
+          overwrite: "auto",
         });
 
-        gsap.to(horizontalRef.current, { autoAlpha: 1, pointerEvents: "auto", duration: 0.35, delay: 0.2 });
-        gsap.to(verticalRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
-        gsap.to(collapsedIconRef.current, { autoAlpha: 0, scale: 0.8, pointerEvents: "none", duration: 0.15 });
+        gsap.to(horizontalRef.current, {
+          autoAlpha: 1,
+          pointerEvents: "auto",
+          duration: fadeIn,
+          delay: 0.28,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+        gsap.to(verticalRef.current, {
+          autoAlpha: 0,
+          pointerEvents: "none",
+          duration: fadeOut,
+          overwrite: "auto",
+        });
+        gsap.to(collapsedIconRef.current, {
+          autoAlpha: 0,
+          scale: 0.85,
+          pointerEvents: "none",
+          duration: fadeOut,
+          overwrite: "auto",
+        });
       }
     } else {
-      // MOBILE MORPHING SEQUENCE
       if (isMobileScrolled) {
         if (mobileOpen) {
-          // Expanded floating menu on mobile (right side, vertically centered)
-          const deltaX = (windowSize.w - 24 - 36) - (windowSize.w / 2);
-          const deltaY = windowSize.h / 2 - originalTop - 160; // height 320 / 2 = 160
+          const deltaX = windowSize.w - 24 - 36 - windowSize.w / 2;
+          const deltaY = windowSize.h / 2 - originalTop - 160;
 
           gsap.to(wrapper, {
             x: deltaX,
             y: deltaY,
             width: 72,
             height: 320,
-            duration: 0.8,
-            ease: "power4.inOut",
+            duration: morphDuration,
+            ease: morphEase,
+            overwrite: "auto",
           });
 
           gsap.to(nav, {
             borderRadius: "32px",
-            duration: 0.8,
-            ease: "power4.inOut",
+            duration: morphDuration,
+            ease: morphEase,
+            overwrite: "auto",
           });
 
-          // Opacity Toggles using autoAlpha for instant visibility removal
-          gsap.to(mobileNormalRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
-          gsap.to(mobileFloatingIconRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
-          gsap.to(mobileFloatingMenuRef.current, { autoAlpha: 1, pointerEvents: "auto", duration: 0.35, delay: 0.2 });
+          gsap.to(mobileNormalRef.current, {
+            autoAlpha: 0,
+            pointerEvents: "none",
+            duration: fadeOut,
+            overwrite: "auto",
+          });
+          gsap.to(mobileFloatingIconRef.current, {
+            autoAlpha: 0,
+            pointerEvents: "none",
+            duration: fadeOut,
+            overwrite: "auto",
+          });
+          gsap.to(mobileFloatingMenuRef.current, {
+            autoAlpha: 1,
+            pointerEvents: "auto",
+            duration: fadeIn,
+            delay: 0.28,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
         } else {
-          // Floating sticky circle button on mobile (right side, vertically centered) - matching desktop style
-          const deltaX = (windowSize.w - 24 - 36) - (windowSize.w / 2);
-          const deltaY = windowSize.h / 2 - originalTop - 36; // height 72 / 2 = 36
+          const deltaX = windowSize.w - 24 - 28 - windowSize.w / 2;
+          const deltaY = windowSize.h / 2 - originalTop - 28;
 
           gsap.to(wrapper, {
             x: deltaX,
             y: deltaY,
-            width: 72,
-            height: 72,
-            duration: 0.8,
-            ease: "power4.inOut",
+            width: 56,
+            height: 56,
+            duration: morphDuration,
+            ease: morphEase,
+            overwrite: "auto",
           });
 
           gsap.to(nav, {
-            borderRadius: "36px",
-            duration: 0.8,
-            ease: "power4.inOut",
+            borderRadius: "9999px",
+            duration: morphDuration,
+            ease: morphEase,
+            overwrite: "auto",
           });
 
-          // Opacity Toggles
-          gsap.to(mobileNormalRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
-          gsap.to(mobileFloatingIconRef.current, { autoAlpha: 1, pointerEvents: "auto", duration: 0.35, delay: 0.2 });
-          gsap.to(mobileFloatingMenuRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
+          gsap.to(mobileNormalRef.current, {
+            autoAlpha: 0,
+            pointerEvents: "none",
+            duration: fadeOut,
+            overwrite: "auto",
+          });
+          gsap.to(mobileFloatingIconRef.current, {
+            autoAlpha: 1,
+            pointerEvents: "auto",
+            duration: fadeIn,
+            delay: 0.28,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+          gsap.to(mobileFloatingMenuRef.current, {
+            autoAlpha: 0,
+            pointerEvents: "none",
+            duration: fadeOut,
+            overwrite: "auto",
+          });
         }
       } else {
-        // Morph back to full horizontal mobile menu bar at top
-        const targetHeight = mobileOpen ? 320 : (isScrolled ? 56 : 64);
+        const targetHeight = mobileOpen ? 320 : isScrolled ? 56 : 64;
         const targetBorderRadius = mobileOpen ? "24px" : "9999px";
 
         gsap.to(wrapper, {
@@ -389,20 +471,38 @@ export default function Navbar() {
           y: 0,
           width: "90%",
           height: targetHeight,
-          duration: 0.8,
-          ease: "power4.inOut",
+          duration: morphDuration,
+          ease: morphEase,
+          overwrite: "auto",
         });
 
         gsap.to(nav, {
           borderRadius: targetBorderRadius,
-          duration: 0.8,
-          ease: "power4.inOut",
+          duration: morphDuration,
+          ease: morphEase,
+          overwrite: "auto",
         });
 
-        // Opacity Toggles
-        gsap.to(mobileNormalRef.current, { autoAlpha: 1, pointerEvents: "auto", duration: 0.35, delay: 0.25 });
-        gsap.to(mobileFloatingIconRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
-        gsap.to(mobileFloatingMenuRef.current, { autoAlpha: 0, pointerEvents: "none", duration: 0.15 });
+        gsap.to(mobileNormalRef.current, {
+          autoAlpha: 1,
+          pointerEvents: "auto",
+          duration: fadeIn,
+          delay: 0.3,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+        gsap.to(mobileFloatingIconRef.current, {
+          autoAlpha: 0,
+          pointerEvents: "none",
+          duration: fadeOut,
+          overwrite: "auto",
+        });
+        gsap.to(mobileFloatingMenuRef.current, {
+          autoAlpha: 0,
+          pointerEvents: "none",
+          duration: fadeOut,
+          overwrite: "auto",
+        });
       }
     }
   }, [isDesktop, isDocked, isMobileScrolled, isCollapsed, mobileOpen, isScrolled, windowSize]);
@@ -440,27 +540,27 @@ export default function Navbar() {
 
   /* ── Entrance stagger variants ── */
   const containerVariants = {
-    hidden: { opacity: 0, y: -20, filter: "blur(8px)" },
+    hidden: { opacity: 0, y: -16, filter: "blur(6px)" },
     visible: {
       opacity: 1,
       y: 0,
       filter: "blur(0px)",
       transition: {
-        duration: 0.8,
+        duration: 1.0,
         ease: [0.16, 1, 0.3, 1] as const,
-        staggerChildren: 0.1,
-        delayChildren: 0.15,
+        staggerChildren: 0.08,
+        delayChildren: 0.12,
       },
     },
   };
 
   const childVariants = {
-    hidden: { opacity: 0, y: -10 },
+    hidden: { opacity: 0, y: -8 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.6,
+        duration: 0.75,
         ease: [0.16, 1, 0.3, 1] as const,
       },
     },
@@ -507,13 +607,20 @@ export default function Navbar() {
         {/* Inner Nav Panel - Solid/Translucent Orange Background */}
         <motion.nav
           ref={navRef}
-          className="w-full h-full relative overflow-hidden flex items-center justify-between rounded-full bg-lime-accent shadow-none transition-shadow duration-300 hover:shadow-lg hover:shadow-lime-accent/20"
+          className="w-full h-full relative overflow-hidden flex items-center justify-between rounded-full shadow-none transition-shadow duration-500"
           animate={{
-            y: isHidden ? -100 : 0,
-            backgroundColor: (isDocked && isCollapsed) ? "rgba(0,0,0,0)" : "#F45A37",
+            y: isHidden ? -110 : 0,
+            backgroundColor:
+              (isDocked && isCollapsed) || (isMobileScrolled && !mobileOpen)
+                ? "rgba(255,255,255,0)"
+                : "#F45A37",
+            boxShadow:
+              (isDocked && isCollapsed) || (isMobileScrolled && !mobileOpen)
+                ? "0 0 0 rgba(0,0,0,0)"
+                : "0 10px 30px rgba(244,90,55,0.18)",
           }}
           transition={{
-            duration: 0.5,
+            duration: 0.7,
             ease: [0.16, 1, 0.3, 1],
           }}
           role="navigation"
@@ -552,8 +659,9 @@ export default function Navbar() {
                   ))}
                 </motion.div>
 
-                {/* Resume Button */}
-                <motion.div variants={childVariants}>
+                {/* Resume Button + Theme Toggle */}
+                <motion.div variants={childVariants} className="flex items-center gap-3">
+                  <ThemeToggle />
                   <Magnetic strength={0.2}>
                     <a
                       href="/resume/Ahmad_Ilyas_Resume"
@@ -617,7 +725,7 @@ export default function Navbar() {
               >
                 <button
                   onClick={() => setIsCollapsed(false)}
-                  className="w-12 h-12 rounded-full bg-[#060606] border border-white/10 hover:border-[#F45A37] hover:scale-105 flex items-center justify-center text-white transition-all duration-300 cursor-pointer shadow-lg hover:shadow-[0_0_20px_rgba(244,90,55,0.3)]"
+                  className="w-full h-full rounded-full bg-[#1A1714] border border-[#1A1714]/15 hover:border-lime-accent/40 hover:scale-[1.03] flex items-center justify-center text-white transition-all duration-500 ease-[0.16,1,0.3,1] cursor-pointer shadow-[0_8px_24px_rgba(26,23,20,0.12)]"
                   aria-label="Expand Navigation"
                 >
                   {/* Luxury 4-dot Grid indicator */}
@@ -643,10 +751,13 @@ export default function Navbar() {
                 {/* Header Row */}
                 <div className="flex items-center justify-between w-full h-10">
                   <Logo />
-                  <HamburgerToggle
-                    isOpen={mobileOpen}
-                    onClick={() => setMobileOpen(!mobileOpen)}
-                  />
+                  <div className="flex items-center gap-2">
+                    <ThemeToggle />
+                    <HamburgerToggle
+                      isOpen={mobileOpen}
+                      onClick={() => setMobileOpen(!mobileOpen)}
+                    />
+                  </div>
                 </div>
 
                 {/* Vertical Links List (renders when mobile menu is open at the top) */}
@@ -695,7 +806,7 @@ export default function Navbar() {
               >
                 <button
                   onClick={() => setMobileOpen(true)}
-                  className="w-12 h-12 rounded-full bg-[#060606] border border-[#060606] flex items-center justify-center text-white transition-all cursor-pointer shadow-lg"
+                  className="w-full h-full rounded-full bg-[#1A1714] border border-[#1A1714]/15 flex items-center justify-center text-white transition-all duration-500 ease-[0.16,1,0.3,1] cursor-pointer shadow-[0_8px_24px_rgba(26,23,20,0.12)] hover:scale-[1.03] hover:border-lime-accent/40"
                   aria-label="Open Mobile Menu"
                 >
                   {/* Luxury 4-dot Grid indicator */}

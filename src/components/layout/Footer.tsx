@@ -7,10 +7,10 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-background-dark py-12 flex flex-col items-center justify-center relative z-10 overflow-hidden">
+    <footer className="w-full bg-transparent py-8 flex flex-col items-center justify-center relative z-10 overflow-hidden">
       {/* Thin elegant top divider */}
-      <div className="w-full max-w-7xl px-6 md:px-12 mb-8">
-        <div className="w-full h-[1px] bg-white/5" />
+      <div className="w-full max-w-7xl px-6 md:px-12 mb-6">
+        <div className="w-full h-[1px] bg-border-subtle" />
       </div>
 
       {/* 

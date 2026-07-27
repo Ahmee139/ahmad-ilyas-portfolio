@@ -106,7 +106,7 @@ export default function CustomCursor() {
       scale: 1,
       width: 24,
       height: 24,
-      borderColor: "#CFC6B8",
+      borderColor: "var(--theme-text-secondary)",
       backgroundColor: "rgba(217, 217, 217, 0)",
     },
     hover: {

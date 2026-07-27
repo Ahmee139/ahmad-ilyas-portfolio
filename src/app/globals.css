@@ -1,18 +1,26 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant light (&:where(.light, .light *));
+
 @theme {
-  --color-background-dark: #060606;
-  --color-background-secondary: #0F0F0F;
-  --color-silver-primary: #B7AEA2;
-  --color-silver-secondary: #CFC6B8;
-  --color-nav-text: #C8C0B4;
-  --color-body-text: #9A948B;
-  --color-muted-text: #77716A;
+  --color-background-dark: var(--theme-bg);
+  --color-background-secondary: var(--theme-bg-secondary);
+  --color-silver-primary: var(--theme-text-secondary);
+  --color-silver-secondary: var(--theme-text-primary);
+  --color-nav-text: var(--theme-text-secondary);
+  --color-body-text: var(--theme-text-body);
+  --color-muted-text: var(--theme-text-muted);
   --color-lime-accent: #F45A37;
   --color-lime-dark: #D94A2C;
   --color-orange-accent: #F45A37;
   --color-orange-hover: #FF6A45;
   --color-orange-pressed: #D94A2C;
+  --color-surface: var(--theme-surface);
+  --color-surface-elevated: var(--theme-surface-elevated);
+  --color-border-subtle: var(--theme-border);
+  --color-border-strong: var(--theme-border-strong);
+  --color-on-accent: var(--theme-on-accent);
 
   --font-display: var(--font-geist), sans-serif;
   --font-body: var(--font-geist), sans-serif;
@@ -23,21 +31,65 @@
 
   @keyframes glow {
     from {
-      box-shadow: 0 0 10px rgba(244, 90, 55, 0.2), 0 0 20px rgba(244, 90, 55, 0.1);
+      box-shadow: 0 0 10px rgba(244, 90, 55, 0.15), 0 0 20px rgba(244, 90, 55, 0.08);
     }
     to {
-      box-shadow: 0 0 20px rgba(244, 90, 55, 0.4), 0 0 40px rgba(244, 90, 55, 0.2);
+      box-shadow: 0 0 18px rgba(244, 90, 55, 0.28), 0 0 32px rgba(244, 90, 55, 0.12);
     }
   }
 }
 
+/* ─── Light Mode (default) ─── */
+:root,
+html.light {
+  color-scheme: light;
+  --theme-bg: #FFFFFF;
+  --theme-bg-secondary: #F8F8F7;
+  --theme-text-primary: #1A1714;
+  --theme-text-secondary: #4A453F;
+  --theme-text-body: #5C564F;
+  --theme-text-muted: #8A847C;
+  --theme-surface: rgba(26, 23, 20, 0.03);
+  --theme-surface-elevated: #FFFFFF;
+  --theme-border: rgba(26, 23, 20, 0.08);
+  --theme-border-strong: rgba(26, 23, 20, 0.12);
+  --theme-on-accent: #FFFFFF;
+  --theme-shadow-card: 0 18px 48px rgba(26, 23, 20, 0.07);
+  --theme-conic-base: #C4BBB0;
+  --theme-selection-fg: #FFFFFF;
+  --theme-scrollbar-track: #F2F2F0;
+  --theme-dot: rgba(244, 90, 55, 0.22);
+  --theme-page-gradient: none;
+}
+
+/* ─── Dark Mode ─── */
+html.dark {
+  color-scheme: dark;
+  --theme-bg: #060606;
+  --theme-bg-secondary: #0F0F0F;
+  --theme-text-primary: #CFC6B8;
+  --theme-text-secondary: #B7AEA2;
+  --theme-text-body: #9A948B;
+  --theme-text-muted: #77716A;
+  --theme-surface: rgba(255, 255, 255, 0.03);
+  --theme-surface-elevated: rgba(15, 15, 15, 0.92);
+  --theme-border: rgba(255, 255, 255, 0.06);
+  --theme-border-strong: rgba(255, 255, 255, 0.1);
+  --theme-on-accent: #FFFFFF;
+  --theme-shadow-card: 0 20px 50px rgba(0, 0, 0, 0.55);
+  --theme-conic-base: #CFC6B8;
+  --theme-selection-fg: #060606;
+  --theme-scrollbar-track: #060606;
+  --theme-dot: rgba(244, 90, 55, 0.35);
+  --theme-page-gradient: none;
+}
+
 :root {
-  background-color: #060606;
-  color: #CFC6B8;
+  background-color: var(--theme-bg);
+  color: var(--theme-text-primary);
   overflow-x: hidden;
 }
 
-/* Logo shimmer sweep animation */
 @keyframes shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
@@ -45,16 +97,16 @@
 
 body {
   font-family: var(--font-body);
-  background-color: #060606;
-  color: #CFC6B8;
+  background-color: var(--theme-bg);
+  color: var(--theme-text-primary);
   min-height: 100vh;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* Hide default cursor on desktop devices with pointer accuracy */
 @media (pointer: fine) {
   .custom-cursor-active,
   .custom-cursor-active * {
@@ -62,24 +114,22 @@ body {
   }
 }
 
-/* Selection styles */
 ::selection {
   background-color: #F45A37;
-  color: #060606;
+  color: var(--theme-selection-fg);
 }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #060606;
+  background: var(--theme-scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
   background: #F45A37;
-  border: 2px solid #060606;
+  border: 2px solid var(--theme-scrollbar-track);
   border-radius: 4px;
 }
 
@@ -87,7 +137,6 @@ body {
   background: #FF6A45;
 }
 
-/* Noise Keyframes (shuffling background position to simulate film static) */
 @keyframes noise-animation {
   0% { background-position: 0px 0px; }
   10% { background-position: -50px 20px; }
@@ -102,7 +151,6 @@ body {
   100% { background-position: 0px 0px; }
 }
 
-/* Lenis Custom Smooth Scroll Setup */
 html.lenis,
 html.lenis body {
   height: auto;
@@ -124,14 +172,38 @@ html.lenis body {
   pointer-events: none;
 }
 
-/* Portrait: transparent-bg PNG — just cinematic grayscale, no blend mode needed */
-/* Hover slowly restores ~20% of original color */
 .portrait-img {
   filter: grayscale(1) brightness(1.05) contrast(1.1);
   will-change: filter;
   transition: filter 1200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+html.light .portrait-img {
+  filter: grayscale(1) brightness(1.02) contrast(1.05);
+}
+
 .portrait-container:hover .portrait-img {
   filter: grayscale(0.8) brightness(1.05) contrast(1.1);
+}
+
+html.light .portrait-container:hover .portrait-img {
+  filter: grayscale(0.75) brightness(1.02) contrast(1.05);
+}
+
+/* Project card — horizontal line sweeps top → bottom (slow) */
+@keyframes card-line-sweep {
+  0% {
+    opacity: 0;
+    top: 0%;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    top: 100%;
+  }
 }

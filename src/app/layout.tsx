@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import { LoaderProvider } from "@/context/LoaderContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import SmoothScrollProvider from "@/components/layout/SmoothScrollProvider";
 import PageTransition from "@/components/layout/PageTransition";
 import Loader from "@/components/common/Loader";
@@ -33,9 +34,26 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#060606",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
+    { media: "(prefers-color-scheme: dark)", color: "#060606" },
+  ],
+  colorScheme: "light dark",
 };
+
+const themeInitScript = `
+(function(){
+  try {
+    var t = localStorage.getItem('portfolio-theme');
+    if (t !== 'light' && t !== 'dark') t = 'light';
+    document.documentElement.classList.remove('light','dark');
+    document.documentElement.classList.add(t);
+    document.documentElement.style.colorScheme = t;
+  } catch (e) {
+    document.documentElement.classList.add('light');
+  }
+})();
+`;
 
 export default function RootLayout({
   children,
@@ -45,25 +63,31 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geist.variable} dark antialiased`}
+      className={`${geist.variable} light antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body>
-        <LoaderProvider>
-          {/* Bottom visual assets (z-indices kept low) */}
-          <AmbientGlow />
-          <Particles />
-          
-          {/* Top aesthetic layers (z-indices high, but click-through safe) */}
-          <Noise />
-          <CustomCursor />
-          <Loader />
-          <Navbar />
+        <ThemeProvider>
+          <LoaderProvider>
+            {/* Bottom visual assets (z-indices kept low) */}
+            <AmbientGlow />
+            <Particles />
 
-          {/* Core content container with scroll and page transitions */}
-          <SmoothScrollProvider>
-            <PageTransition>{children}</PageTransition>
-          </SmoothScrollProvider>
-        </LoaderProvider>
+            {/* Top aesthetic layers (z-indices high, but click-through safe) */}
+            <Noise />
+            <CustomCursor />
+            <Loader />
+            <Navbar />
+
+            {/* Core content container with scroll and page transitions */}
+            <SmoothScrollProvider>
+              <PageTransition>{children}</PageTransition>
+            </SmoothScrollProvider>
+          </LoaderProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

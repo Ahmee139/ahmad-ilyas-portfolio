@@ -19,7 +19,7 @@ export default function Contact() {
   const springGlowY = useSpring(glowY, { damping: 50, stiffness: 20 });
 
   // Map coordinate springs to radial background template
-  const backgroundGlow = useMotionTemplate`radial-gradient(circle at ${springGlowX}% ${springGlowY}%, rgba(244, 90, 55, 0.025) 0%, transparent 65%)`;
+  const backgroundGlow = useMotionTemplate`radial-gradient(circle at ${springGlowX}% ${springGlowY}%, rgba(244, 90, 55, 0.04) 0%, transparent 65%)`;
 
   useEffect(() => {
     let angle = 0;
@@ -43,7 +43,7 @@ export default function Contact() {
   return (
     <SectionWrapper
       id="contact"
-      className="bg-background-dark border-t border-white/5 pt-28 pb-16 md:pt-36 md:pb-20 flex items-center justify-center relative overflow-hidden"
+      className="bg-transparent border-t border-border-subtle !py-10 md:!py-14 flex items-center justify-center relative overflow-hidden"
     >
       {/* Subtle slowly drifting radial background glow */}
       <motion.div
@@ -52,7 +52,7 @@ export default function Contact() {
         className="absolute inset-0 w-full h-full pointer-events-none z-0"
       />
 
-      <div className="w-full max-w-4xl mx-auto px-6 text-center relative z-10 space-y-10 md:space-y-12 flex flex-col items-center justify-center">
+      <div className="w-full max-w-4xl mx-auto px-6 text-center relative z-10 space-y-6 md:space-y-8 flex flex-col items-center justify-center">
         
         {/* Decorative Tag */}
         <Reveal variant="fade-up" delay={0.1}>
@@ -88,10 +88,10 @@ export default function Contact() {
               className="relative group block overflow-hidden rounded-full p-[1.5px] cursor-none select-none transition-all duration-500 hover:shadow-[0_0_30px_rgba(244,90,55,0.18)]"
             >
               {/* Conic sweep border container (rotates slowly, accelerates on hover) */}
-              <div className="absolute inset-[-150%] bg-[conic-gradient(from_0deg,#CFC6B8_0%,#CFC6B8_70%,#F45A37_80%,#CFC6B8_90%,#CFC6B8_100%)] animate-[spin_5s_linear_infinite] group-hover:animate-[spin_2.5s_linear_infinite] opacity-50 group-hover:opacity-100 transition-all duration-500" />
+              <div className="absolute inset-[-150%] bg-[conic-gradient(from_0deg,var(--theme-conic-base)_0%,var(--theme-conic-base)_70%,#F45A37_80%,var(--theme-conic-base)_90%,var(--theme-conic-base)_100%)] animate-[spin_5s_linear_infinite] group-hover:animate-[spin_2.5s_linear_infinite] opacity-50 group-hover:opacity-100 transition-all duration-500" />
               
               {/* Inner content layer: fills with orange on hover */}
-              <div className="relative z-10 px-8 py-4 bg-background-dark rounded-full transition-colors duration-500 group-hover:bg-lime-accent flex items-center gap-3 font-mono text-xs md:text-sm tracking-widest uppercase text-silver-secondary group-hover:text-background-dark">
+              <div className="relative z-10 px-8 py-4 bg-white dark:bg-background-dark rounded-full transition-colors duration-500 group-hover:bg-lime-accent flex items-center gap-3 font-mono text-xs md:text-sm tracking-widest uppercase text-silver-secondary group-hover:text-on-accent border border-border-subtle group-hover:border-transparent">
                 <FiMail className="text-base transition-transform duration-300 group-hover:scale-110" />
                 <span>Email Me</span>
               </div>
@@ -108,10 +108,10 @@ export default function Contact() {
               className="relative group block overflow-hidden rounded-full p-[1.5px] cursor-none select-none transition-all duration-500 hover:shadow-[0_0_30px_rgba(244,90,55,0.18)]"
             >
               {/* Conic sweep border container */}
-              <div className="absolute inset-[-150%] bg-[conic-gradient(from_0deg,#CFC6B8_0%,#CFC6B8_70%,#F45A37_80%,#CFC6B8_90%,#CFC6B8_100%)] animate-[spin_5s_linear_infinite] group-hover:animate-[spin_2.5s_linear_infinite] opacity-50 group-hover:opacity-100 transition-all duration-500" />
+              <div className="absolute inset-[-150%] bg-[conic-gradient(from_0deg,var(--theme-conic-base)_0%,var(--theme-conic-base)_70%,#F45A37_80%,var(--theme-conic-base)_90%,var(--theme-conic-base)_100%)] animate-[spin_5s_linear_infinite] group-hover:animate-[spin_2.5s_linear_infinite] opacity-50 group-hover:opacity-100 transition-all duration-500" />
               
               {/* Inner content layer */}
-              <div className="relative z-10 px-8 py-4 bg-background-dark rounded-full transition-colors duration-500 group-hover:bg-lime-accent flex items-center gap-3 font-mono text-xs md:text-sm tracking-widest uppercase text-silver-secondary group-hover:text-background-dark">
+              <div className="relative z-10 px-8 py-4 bg-white dark:bg-background-dark rounded-full transition-colors duration-500 group-hover:bg-lime-accent flex items-center gap-3 font-mono text-xs md:text-sm tracking-widest uppercase text-silver-secondary group-hover:text-on-accent border border-border-subtle group-hover:border-transparent">
                 <FaWhatsapp className="text-base transition-transform duration-300 group-hover:scale-110" />
                 <span>WhatsApp</span>
               </div>

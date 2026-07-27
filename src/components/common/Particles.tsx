@@ -2,10 +2,18 @@
 
 import { useEffect, useRef } from "react";
 import { useLoader } from "@/context/LoaderContext";
+import { useTheme } from "@/context/ThemeContext";
 
+/**
+ * Soft scroll-reactive dots — appear/drift gently as the user scrolls.
+ * Clean, low-contrast, never noisy.
+ */
 export default function Particles() {
   const { isLoading } = useLoader();
+  const { theme } = useTheme();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const themeRef = useRef(theme);
+  themeRef.current = theme;
 
   useEffect(() => {
     if (isLoading) return;
@@ -14,17 +22,21 @@ export default function Particles() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animationFrameId: number;
+    let animationFrameId = 0;
+    let scrollY = window.scrollY;
+    let targetScrollY = window.scrollY;
     const particles: Particle[] = [];
-    const particleCount = 28; // Keep it subtle and low count to avoid clutter
+    const particleCount = 42;
 
     class Particle {
-      x: number = 0;
-      y: number = 0;
-      size: number = 0;
-      speedX: number = 0;
-      speedY: number = 0;
-      opacity: number = 0;
+      x = 0;
+      y = 0;
+      baseY = 0;
+      size = 0;
+      speedX = 0;
+      drift = 0;
+      opacity = 0;
+      phase = 0;
 
       constructor() {
         this.reset(true);
@@ -33,67 +45,82 @@ export default function Particles() {
       reset(init = false) {
         if (!canvas) return;
         this.x = Math.random() * canvas.width;
-        // If initializing, spawn anywhere, otherwise spawn at bottom
-        this.y = init ? Math.random() * canvas.height : canvas.height + 10;
-        this.size = Math.random() * 1.2 + 0.6; // Subtle tiny particles
-        this.speedX = (Math.random() - 0.5) * 0.12; // Slow drift left/right
-        this.speedY = -(Math.random() * 0.2 + 0.05); // Slow drift upward
-        this.opacity = Math.random() * 0.35 + 0.1; // Low opacity
+        this.baseY = init
+          ? Math.random() * (canvas.height + 400) - 200
+          : canvas.height + Math.random() * 120;
+        this.y = this.baseY;
+        this.size = Math.random() * 1.4 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.08;
+        this.drift = Math.random() * 0.15 + 0.05;
+        this.opacity = Math.random() * 0.18 + 0.06;
+        this.phase = Math.random() * Math.PI * 2;
       }
 
-      update() {
+      update(time: number, scroll: number) {
         if (!canvas) return;
-        this.x += this.speedX;
-        this.y += this.speedY;
+        this.x += this.speedX + Math.sin(time * 0.0004 + this.phase) * 0.04;
+        // Gentle parallax tied to scroll — smooth, not jittery
+        this.y = this.baseY - scroll * this.drift - time * 0.012;
 
-        // Reset particle if it drifts off the bounds
-        if (
-          this.y < -10 ||
-          this.x < -10 ||
-          this.x > canvas.width + 10
-        ) {
+        if (this.y < -40 || this.x < -20 || this.x > canvas.width + 20) {
           this.reset(false);
+          this.baseY = canvas.height + Math.random() * 80;
+          this.y = this.baseY - scroll * this.drift;
         }
       }
 
-      draw() {
+      draw(time: number) {
         if (!ctx) return;
+        const pulse = 0.75 + Math.sin(time * 0.0012 + this.phase) * 0.25;
+        const alpha =
+          this.opacity *
+          pulse *
+          (themeRef.current === "light" ? 0.85 : 1);
+
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        // Draw in orange accent shade with opacity mapping
-        ctx.fillStyle = `rgba(244, 90, 55, ${this.opacity})`;
+        ctx.fillStyle =
+          themeRef.current === "light"
+            ? `rgba(244, 90, 55, ${alpha})`
+            : `rgba(244, 90, 55, ${alpha})`;
         ctx.fill();
       }
     }
 
     const resizeCanvas = () => {
-      if (!canvas) return;
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
 
+    const onScroll = () => {
+      targetScrollY = window.scrollY;
+    };
+
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("scroll", onScroll, { passive: true });
 
-    // Instantiate particles
     for (let i = 0; i < particleCount; i++) {
       particles.push(new Particle());
     }
 
-    const animate = () => {
+    const animate = (time: number) => {
+      // Smooth scroll interpolation for clean motion
+      scrollY += (targetScrollY - scrollY) * 0.08;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach((p) => {
-        p.update();
-        p.draw();
+        p.update(time, scrollY);
+        p.draw(time);
       });
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    animate();
+    animationFrameId = requestAnimationFrame(animate);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", resizeCanvas);
+      window.removeEventListener("scroll", onScroll);
     };
   }, [isLoading]);
 

@@ -119,7 +119,7 @@ export default function Loader() {
           </div>
 
           {/* Thin Loading Progress Line */}
-          <div className="relative w-full h-[1px] bg-white/15 overflow-hidden rounded-full">
+          <div className="relative w-full h-[1px] bg-border-strong overflow-hidden rounded-full">
             <motion.div
               className="absolute left-0 top-0 h-full bg-lime-accent"
               style={{ width: `${progress}%` }}
@@ -146,7 +146,7 @@ export default function Loader() {
       >
         <h2
           ref={centerTextRef}
-          className="text-3xl md:text-5xl lg:text-6xl font-display font-black tracking-tighter text-background-dark uppercase text-center select-none"
+          className="text-3xl md:text-5xl lg:text-6xl font-display font-black tracking-tighter text-[#060606] uppercase text-center select-none"
           style={{
             opacity: 0,
             transform: "translateY(30px)",

@@ -31,7 +31,7 @@ export default function SectionWrapper({
     <motion.section
       id={id}
       className={cn(
-        "relative w-full py-32 md:py-48 lg:py-64 overflow-hidden bg-background-dark text-silver-secondary",
+        "relative w-full py-32 md:py-48 lg:py-64 overflow-hidden bg-transparent text-silver-secondary",
         className
       )}
       {...animationProps}
