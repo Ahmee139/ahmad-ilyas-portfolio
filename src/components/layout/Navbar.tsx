@@ -15,7 +15,6 @@ const NAV_ITEMS = [
   { label: "Contact", href: "#contact" },
 ] as const;
 
-const SCROLL_THRESHOLD = 60;
 const HIDE_THRESHOLD = 8; // min delta before show/hide triggers
 
 /* ─── Logo ─── */
@@ -171,13 +170,27 @@ export default function Navbar() {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   // Layout morphing states
-  const [isDesktop, setIsDesktop] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.innerWidth >= 1024;
+  });
   const [isDocked, setIsDocked] = useState(false);
   const [isMobileScrolled, setIsMobileScrolled] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [windowSize, setWindowSize] = useState({ w: 0, h: 0 });
+  const [windowSize, setWindowSize] = useState(() => {
+    if (typeof window === "undefined") return { w: 0, h: 0 };
+    return { w: window.innerWidth, h: window.innerHeight };
+  });
 
   const lastScrollY = useRef(0);
+  const isDesktopRef = useRef(false);
+  const isDockedRef = useRef(false);
+  const isMobileScrolledRef = useRef(false);
+  const isCollapsedRef = useRef(false);
+  const mobileOpenRef = useRef(false);
+  const isHiddenRef = useRef(false);
+  const isScrolledRef = useRef(false);
+  const aboutTriggerYRef = useRef(260);
   const { scrollY } = useScroll();
 
   // References for GSAP transitions
@@ -197,62 +210,110 @@ export default function Navbar() {
   // Detect responsive screen parameters and handle resizing
   useEffect(() => {
     if (typeof window === "undefined") return;
-
-    setWindowSize({ w: window.innerWidth, h: window.innerHeight });
-    setIsDesktop(window.innerWidth >= 1024);
+    isDesktopRef.current = window.innerWidth >= 1024;
 
     const handleResize = () => {
       setWindowSize({ w: window.innerWidth, h: window.innerHeight });
       setIsDesktop(window.innerWidth >= 1024);
+      isDesktopRef.current = window.innerWidth >= 1024;
     };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Dock navbar when About section is reached (with a small lead-in).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const computeAboutTrigger = () => {
+      const aboutEl = document.getElementById("about");
+      if (!aboutEl) return;
+      const rect = aboutEl.getBoundingClientRect();
+      const absoluteTop = rect.top + window.scrollY;
+      aboutTriggerYRef.current = Math.max(120, absoluteTop - 120);
+    };
+
+    computeAboutTrigger();
+    window.addEventListener("resize", computeAboutTrigger);
+    window.addEventListener("load", computeAboutTrigger);
+
+    return () => {
+      window.removeEventListener("resize", computeAboutTrigger);
+      window.removeEventListener("load", computeAboutTrigger);
+    };
+  }, []);
+
+  useEffect(() => {
+    isDockedRef.current = isDocked;
+    isMobileScrolledRef.current = isMobileScrolled;
+    isCollapsedRef.current = isCollapsed;
+    mobileOpenRef.current = mobileOpen;
+    isHiddenRef.current = isHidden;
+    isScrolledRef.current = isScrolled;
+  }, [isDocked, isMobileScrolled, isCollapsed, mobileOpen, isHidden, isScrolled]);
+
   /* ── Scroll triggers for morphing animations ── */
   useMotionValueEvent(scrollY, "change", (latest) => {
     const delta = latest - lastScrollY.current;
+    const aboutTrigger = aboutTriggerYRef.current;
+    // Keep navbar fully steady through Hero; only start state transitions near About.
+    const nextScrolled = latest > aboutTrigger;
+    if (nextScrolled !== isScrolledRef.current) {
+      isScrolledRef.current = nextScrolled;
+      setIsScrolled(nextScrolled);
+    }
 
-    // Auto-close open mobile menu on scroll change
-    if (mobileOpen) {
+    if (mobileOpenRef.current) {
+      mobileOpenRef.current = false;
       setMobileOpen(false);
     }
 
-    // Scrolled state (compact heights)
-    setIsScrolled(latest > SCROLL_THRESHOLD);
-
-    // Desktop Docking trigger (dock at 220px, restore at 120px)
-    if (isDesktop) {
-      if (latest > 220) {
-        if (!isDocked) {
+    if (isDesktopRef.current) {
+      if (latest > aboutTrigger) {
+        if (!isDockedRef.current) {
+          isDockedRef.current = true;
+          isCollapsedRef.current = true;
           setIsDocked(true);
-          setIsCollapsed(true); // Collapses to 4-dot menu button by default when scrolling down!
+          setIsCollapsed(true);
         }
-      } else if (latest < 120) {
+      } else if (
+        latest < aboutTrigger - 110 &&
+        (isDockedRef.current || isCollapsedRef.current)
+      ) {
+        isDockedRef.current = false;
+        isCollapsedRef.current = false;
         setIsDocked(false);
         setIsCollapsed(false);
       }
-    } else {
-      setIsDocked(false);
-    }
 
-    // Mobile floating button trigger (float at 180px, restore at 120px)
-    if (!isDesktop) {
-      if (latest > 180) {
-        setIsMobileScrolled(true);
-      } else if (latest < 120) {
+      if (isMobileScrolledRef.current) {
+        isMobileScrolledRef.current = false;
         setIsMobileScrolled(false);
       }
     } else {
-      setIsMobileScrolled(false);
+      const nextMobileScrolled =
+        latest > 180 ? true : latest < 120 ? false : isMobileScrolledRef.current;
+      if (nextMobileScrolled !== isMobileScrolledRef.current) {
+        isMobileScrolledRef.current = nextMobileScrolled;
+        setIsMobileScrolled(nextMobileScrolled);
+      }
+
+      if (isDockedRef.current) {
+        isDockedRef.current = false;
+        setIsDocked(false);
+      }
     }
 
-    // Hide/show based on direction (only if NOT docked and NOT mobile-scrolled)
-    if (!isDocked && !isMobileScrolled && Math.abs(delta) > HIDE_THRESHOLD) {
-      setIsHidden(delta > 0 && latest > 120);
-    } else {
-      setIsHidden(false);
+    const canHide =
+      latest > aboutTrigger &&
+      !isDockedRef.current &&
+      !isMobileScrolledRef.current &&
+      Math.abs(delta) > HIDE_THRESHOLD;
+    const nextHidden = canHide ? delta > 0 && latest > 120 : false;
+    if (nextHidden !== isHiddenRef.current) {
+      isHiddenRef.current = nextHidden;
+      setIsHidden(nextHidden);
     }
 
     lastScrollY.current = latest;
@@ -264,9 +325,9 @@ export default function Navbar() {
     const nav = navRef.current;
     if (!wrapper || !nav || windowSize.w === 0) return;
 
-    const originalTop = isScrolled ? 8 : 16;
+    const originalTop = 12;
     const morphEase = "power3.inOut";
-    const morphDuration = 1.05;
+    const morphDuration = 1.18;
     const fadeOut = 0.22;
     const fadeIn = 0.4;
 
@@ -342,7 +403,7 @@ export default function Navbar() {
           x: 0,
           y: 0,
           width: "78%",
-          height: isScrolled ? 56 : 64,
+          height: 64,
           duration: morphDuration,
           ease: morphEase,
           overwrite: "auto",
@@ -463,7 +524,7 @@ export default function Navbar() {
           });
         }
       } else {
-        const targetHeight = mobileOpen ? 320 : isScrolled ? 56 : 64;
+        const targetHeight = mobileOpen ? 320 : 64;
         const targetBorderRadius = mobileOpen ? "24px" : "9999px";
 
         gsap.to(wrapper, {
@@ -591,7 +652,7 @@ export default function Navbar() {
   return (
     <motion.header
       className="fixed top-0 left-0 right-0 z-[999] flex justify-center pointer-events-none"
-      style={{ paddingTop: isScrolled ? 8 : 16 }}
+      style={{ paddingTop: 12 }}
       initial="hidden"
       animate={isLoading ? "hidden" : "visible"}
       variants={containerVariants}
@@ -600,9 +661,7 @@ export default function Navbar() {
       <div
         ref={navWrapperRef}
         className="pointer-events-auto w-[90%] lg:w-[78%] max-w-[1280px]"
-        style={{
-          height: isScrolled ? "56px" : "64px",
-        }}
+        style={{ height: "64px" }}
       >
         {/* Inner Nav Panel - Solid/Translucent Orange Background */}
         <motion.nav

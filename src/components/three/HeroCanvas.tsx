@@ -7,7 +7,7 @@ import * as THREE from "three";
 import { useLoader } from "@/context/LoaderContext";
 import { useTheme } from "@/context/ThemeContext";
 
-const PARTICLE_COUNT = 1800;
+const PARTICLE_COUNT = 1400;
 
 // Move impure generators (Math.random) outside the render pipeline to satisfy react-hooks/purity rules
 function generateParticleData(isLight: boolean) {
@@ -48,6 +48,7 @@ interface ParticleWavesProps {
 function ParticleWaves({ scrollProgress, isLight }: ParticleWavesProps) {
   const pointsRef = useRef<THREE.Points>(null);
   const { isLoading } = useLoader();
+  const frameSkipRef = useRef(0);
 
   const { positions, colors } = useMemo(
     () => generateParticleData(isLight),
@@ -73,27 +74,30 @@ function ParticleWaves({ scrollProgress, isLight }: ParticleWavesProps) {
 
     pointsRef.current.rotation.y = time * 0.025;
 
-    const posAttribute = pointsRef.current.geometry.attributes.position;
-    const positionsArray = posAttribute.array as Float32Array;
+    frameSkipRef.current = (frameSkipRef.current + 1) % 2;
+    if (frameSkipRef.current === 0) {
+      const posAttribute = pointsRef.current.geometry.attributes.position;
+      const positionsArray = posAttribute.array as Float32Array;
 
-    const t1 = time * waveParams.tMult1;
-    const t2 = time * waveParams.tMult2;
-    const t3 = time * 0.3;
+      const t1 = time * waveParams.tMult1;
+      const t2 = time * waveParams.tMult2;
+      const t3 = time * 0.3;
 
-    let i3 = 0;
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      const x = positionsArray[i3];
-      const z = positionsArray[i3 + 2];
+      let i3 = 0;
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const x = positionsArray[i3];
+        const z = positionsArray[i3 + 2];
 
-      positionsArray[i3 + 1] =
-        Math.sin(x * waveParams.xMult + t1) *
-          Math.cos(z * waveParams.zMult + t2) *
-          waveParams.amp1 +
-        Math.cos(x * 0.2 - t3) * waveParams.amp2;
+        positionsArray[i3 + 1] =
+          Math.sin(x * waveParams.xMult + t1) *
+            Math.cos(z * waveParams.zMult + t2) *
+            waveParams.amp1 +
+          Math.cos(x * 0.2 - t3) * waveParams.amp2;
 
-      i3 += 3;
+        i3 += 3;
+      }
+      posAttribute.needsUpdate = true;
     }
-    posAttribute.needsUpdate = true;
 
     pointsRef.current.position.y = scrollVal * 1.5;
 
@@ -179,7 +183,7 @@ export default function HeroCanvas({ scrollProgress }: HeroCanvasProps) {
       <Canvas
         key={theme}
         camera={{ position: [0, 1.2, 3.8], fov: 60 }}
-        dpr={[1, 1.5]}
+        dpr={[1, 1.25]}
         className="w-full h-full z-10"
       >
         <ambientLight intensity={isLight ? 0.45 : 0.2} />

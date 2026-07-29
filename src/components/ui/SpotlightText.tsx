@@ -10,8 +10,10 @@ interface SpotlightTextProps {
 
 export default function SpotlightText({ children, className }: SpotlightTextProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const [reduceMotion, setReduceMotion] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  });
 
   // Motion values for client-relative mouse coordinates
   const mouseX = useMotionValue(0);
@@ -25,7 +27,6 @@ export default function SpotlightText({ children, className }: SpotlightTextProp
   useEffect(() => {
     // Check for user accessibility prefers-reduced-motion media query
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduceMotion(mediaQuery.matches);
 
     const handleMediaChange = (e: MediaQueryListEvent) => {
       setReduceMotion(e.matches);
@@ -44,12 +45,10 @@ export default function SpotlightText({ children, className }: SpotlightTextProp
   };
 
   const handleMouseEnter = () => {
-    setIsHovered(true);
     radius.set(110); // Diameter is 220px, so radius is 110px
   };
 
   const handleMouseLeave = () => {
-    setIsHovered(false);
     radius.set(0); // Smoothly collapse radius to 0px on leave
   };
 

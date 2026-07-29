@@ -33,7 +33,8 @@ export default function CustomCursor() {
   const springRotate = useSpring(rotate, { damping: 30, stiffness: 350 });
 
   useEffect(() => {
-    if (cursorState === "hidden") return;
+    const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+    if (isTouchDevice) return;
 
     // Apply class to document to hide default system pointer
     document.documentElement.classList.add("custom-cursor-active");
@@ -76,15 +77,18 @@ export default function CustomCursor() {
       const isMagnetic = target.closest("[data-cursor-magnetic]");
       const isInteractive = target.closest("button, a, [role='button'], input, select, textarea");
 
+      let nextState: "default" | "hover" | "magnetic" | "spotlight";
       if (isSpotlight) {
-        setCursorState("spotlight");
+        nextState = "spotlight";
       } else if (isMagnetic) {
-        setCursorState("magnetic");
+        nextState = "magnetic";
       } else if (isInteractive) {
-        setCursorState("hover");
+        nextState = "hover";
       } else {
-        setCursorState("default");
+        nextState = "default";
       }
+
+      setCursorState((prev) => (prev === nextState ? prev : nextState));
     };
 
     window.addEventListener("mousemove", moveCursor);
@@ -95,7 +99,7 @@ export default function CustomCursor() {
       window.removeEventListener("mousemove", moveCursor);
       window.removeEventListener("mouseover", handleMouseOver);
     };
-  }, [cursorState, cursorX, cursorY, stretchX, stretchY, rotate]);
+  }, [cursorX, cursorY, stretchX, stretchY, rotate]);
 
   if (cursorState === "hidden") return null;
 

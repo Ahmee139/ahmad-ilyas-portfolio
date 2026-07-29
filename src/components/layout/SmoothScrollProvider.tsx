@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { ReactLenis } from "lenis/react";
 import { gsap } from "@/utils/gsap-setup";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLoader } from "@/context/LoaderContext";
 
 interface SmoothScrollProviderProps {
@@ -22,15 +23,15 @@ export default function SmoothScrollProvider({ children }: SmoothScrollProviderP
     gsap.ticker.add(update);
 
     const lenisInstance = lenisRef.current?.lenis;
+    const onLenisScroll = () => ScrollTrigger.update();
     if (lenisInstance) {
-      lenisInstance.on("scroll", () => {
-        import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
-          ScrollTrigger.update();
-        });
-      });
+      lenisInstance.on("scroll", onLenisScroll);
     }
 
     return () => {
+      if (lenisInstance) {
+        lenisInstance.off("scroll", onLenisScroll);
+      }
       gsap.ticker.remove(update);
     };
   }, []);
